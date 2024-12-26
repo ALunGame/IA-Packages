@@ -1,0 +1,16 @@
+{
+  "name": "com.ia.ecs",
+  "version": "1.0.0",
+  "displayName": "IA-ECS",
+  "description": "ECS\u6846\u67b6\uff0c\u9002\u7528\u4e8e\u6e38\u620f\u6838\u5fc3\u6a21\u5757",
+  "unity": "2022.1",
+  "unityRelease": "0b5",
+  "dependencies": {
+    "com.ia.engine": "1.0.0",
+    "com.ia.toolkit": "1.0.0",
+    "com.ia.nodegraph": "1.0.0"
+  },
+  "author": {
+    "name": "ALun"
+  }
+}

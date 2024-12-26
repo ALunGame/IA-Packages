@@ -1,0 +1,14 @@
+{
+  "name": "com.ia.ui",
+  "version": "1.0.0",
+  "displayName": "IA-UI",
+  "description": "UI框架",
+  "unity": "2022.1",
+  "unityRelease": "0b5",
+  "dependencies": {
+    "com.ia.engine": "1.0.0"
+  },
+  "author": {
+    "name": "ALun"
+  }
+}

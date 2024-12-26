@@ -1,0 +1,18 @@
+{
+    "name": "GM.ClassifiedConsole.Editor",
+    "rootNamespace": "",
+    "references": [
+        "GUID:ccd7a338a0eb14b4fbb27bfa68644c5b"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

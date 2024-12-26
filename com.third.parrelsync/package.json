@@ -1,0 +1,10 @@
+{
+    "name": "com.veriorpies.parrelsync",
+    "displayName": "ParrelSync",
+    "version": "1.5.2",
+    "unity": "2018.4",
+    "description": "https://github.com/VeriorPies/ParrelSync  项目多开插件",
+    "license": "MIT",
+	"keywords": [ "Networking", "Utils", "Editor", "Extensions" ],
+    "dependencies": {}
+}

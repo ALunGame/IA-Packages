@@ -1,0 +1,16 @@
+{
+    "name": "IAToolKit",
+    "rootNamespace": "",
+    "references": [
+        "GUID:e4ffb865039f27f48a2d3be1513edfcf"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

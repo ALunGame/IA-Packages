@@ -1,0 +1,14 @@
+{
+  "name": "com.ia.toolkit",
+  "version": "1.0.0",
+  "displayName": "IA-ToolKit",
+  "description": "对于编辑器的扩展功能",
+  "unity": "2022.1",
+  "unityRelease": "0b5",
+  "dependencies": {
+    "com.ia.engine": "1.0.0"
+  },
+  "author": {
+    "name": "ALun"
+  }
+}

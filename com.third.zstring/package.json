@@ -1,0 +1,9 @@
+{
+    "name": "com.cysharp.zstring",
+    "version": "1.0.0",
+    "displayName": "ZString",
+    "description": "ZString",
+    "author": { "name": "Cysharp, Inc.", "url": "https://cysharp.co.jp/en/" },
+    "license": "MIT",
+    "dependencies": {}
+}

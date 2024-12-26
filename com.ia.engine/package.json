@@ -1,0 +1,14 @@
+{
+  "name": "com.ia.engine",
+  "version": "1.0.0",
+  "displayName": "IA-Engine",
+  "description": "\u5f15\u64ce\u6838\u5fc3\u5e93\uff0c\u5305\u542b\u5bf9C#\uff0cUnity\u7684\u57fa\u7840\u529f\u80fd\u6269\u5c55",
+  "unity": "2022.1",
+  "unityRelease": "0b5",
+  "dependencies": {
+    "com.ia.toolkit": "1.0.0"
+  },
+  "author": {
+    "name": "ALun"
+  }
+}

@@ -1,0 +1,22 @@
+{
+    "name": "IAECS.Editor",
+    "rootNamespace": "",
+    "references": [
+        "GUID:1e3ef37b2b06950418cafe2f3654ff33",
+        "GUID:3da5f81e664a9674c8629a185113a227",
+        "GUID:50d625b9407d73e4cb2432a3091e9955",
+        "GUID:e4ffb865039f27f48a2d3be1513edfcf",
+        "GUID:60d874fdb7c879f44aeebca835eb928b"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

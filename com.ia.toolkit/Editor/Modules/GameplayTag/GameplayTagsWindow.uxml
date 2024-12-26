@@ -1,0 +1,11 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="True">
+    <ui:VisualElement name="Top" style="flex-shrink: 0; height: 50px; max-height: 50px; min-height: 50px; flex-direction: row; border-left-color: rgb(0, 0, 0); border-right-color: rgb(0, 0, 0); border-top-color: rgb(0, 0, 0); border-bottom-color: rgb(0, 0, 0); border-left-width: 1px; border-right-width: 1px; border-top-width: 1px; border-bottom-width: 1px;">
+        <uie:ToolbarMenu display-tooltip-when-elided="true" name="DisplayChoose" text="树显示" style="width: 74px; margin-left: 1px; margin-top: 1px; margin-bottom: 1px; border-top-width: 1px; border-bottom-width: 1px; -unity-text-align: upper-left; -unity-font-style: bold; font-size: 16px;" />
+        <ui:Button text="展开所有" display-tooltip-when-elided="true" name="ExpandAllBtn" style="-unity-font-style: bold; display: flex;" />
+        <ui:Button text="创建" display-tooltip-when-elided="true" name="CreateBtn" style="-unity-font-style: bold; width: 70px;" />
+        <ui:Button text="保存" display-tooltip-when-elided="true" name="SaveBtn" style="-unity-font-style: bold; width: 70px;" />
+    </ui:VisualElement>
+    <ui:VisualElement name="Bottom" style="flex-grow: 1; flex-shrink: 0; border-left-color: rgb(0, 0, 0); border-right-color: rgb(0, 0, 0); border-top-color: rgb(0, 0, 0); border-bottom-color: rgb(0, 0, 0); border-left-width: 1px; border-right-width: 1px; border-bottom-width: 1px;">
+        <ui:ScrollView name="TagsArea" style="flex-grow: 1; flex-shrink: 0;" />
+    </ui:VisualElement>
+</ui:UXML>

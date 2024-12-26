@@ -1,0 +1,14 @@
+{
+  "name": "com.ia.nodegraph",
+  "version": "1.0.0",
+  "displayName": "IA-NodeGraph",
+  "description": "节点视图",
+  "unity": "2022.1",
+  "unityRelease": "0b5",
+  "dependencies": {
+    "com.ia.engine": "1.0.0"
+  },
+  "author": {
+    "name": "ALun"
+  }
+}
