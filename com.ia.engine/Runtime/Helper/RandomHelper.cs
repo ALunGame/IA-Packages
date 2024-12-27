@@ -73,6 +73,25 @@ namespace IAEngine
         }
 
         /// <summary>
+        /// 打乱列表
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="pList"></param>
+        /// <exception cref="NotImplementedException"></exception>
+        public static void ListRandom<T>(List<T> pList)
+        {
+            int num;
+            T tmp;
+            for (int i = 0; i < pList.Count; i++)
+            {
+                num = Range(0, pList.Count - 1);
+                tmp = pList[i];
+                pList[i] = pList[num];
+                pList[num] = tmp;
+            }
+        }
+
+        /// <summary>
         /// 权重随机取值
         /// </summary>
         /// <typeparam name="T"></typeparam>
@@ -120,5 +139,7 @@ namespace IAEngine
             outValue = default;
             return false;
         }
+
+
     }
 }
