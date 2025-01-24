@@ -2,9 +2,10 @@ using IAConfig.Excel.Export;
 using IAConfig.Excel.GenCode;
 using IAConfig.Excel.GenCode.Property;
 using IAToolkit;
+using MemoryPack;
 using System.Collections.Generic;
+using System.IO;
 using UnityEditor;
-using UnityEngine;
 
 namespace IAConfig.Excel
 {
@@ -29,7 +30,7 @@ namespace IAConfig.Excel
         }
 
 
-        [MenuItem("表格/生成代码")]
+        [MenuItem("Tools/表格/生成代码")]
         public static void GenCode()
         {
             List<GenConfigInfo> configs = ReadBaseExcel(true);
@@ -45,7 +46,7 @@ namespace IAConfig.Excel
             AssetDatabase.Refresh();
         }
         
-        [MenuItem("表格/导出所有")]
+        [MenuItem("Tools/表格/导出所有")]
         public static void ExportAll()
         {
             List<GenConfigInfo> configs = ReadBaseExcel();
@@ -55,49 +56,43 @@ namespace IAConfig.Excel
             AssetDatabase.Refresh();
         }
         
-        [MenuItem("表格/设置")]
+        [MenuItem("Tools/表格/设置")]
         public static void CreateSetting()
         {
             ExcelReadSetting.CreateSetting();
         }
 
-        [MenuItem("表格/打开表格目录 &e")]
+        [MenuItem("Tools/表格/打开表格目录 &e")]
         public static void OpenExcelRootPath()
         {
             MiscHelper.OpenDirectory(ExcelReadSetting.Setting.ConfigRootPath);
         }
         
-        [MenuItem("表格/测试")]
+        [MenuItem("Tools/表格/测试")]
         public static void Test()
         {
             
 
         }
         
-        public static List<T> GetConfig<T>() where T:new()
+        /// <summary>
+        /// 加载配置
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+        public static List<T> LoadConfig<T>()
         {
-            List<GenConfigInfo> configs = ReadBaseExcel();
-            
-            string className = typeof(T).Name;
-            GenConfigInfo selInfo = null;
-            foreach (GenConfigInfo configInfo in configs)
+            string savePath = $"{ExcelReadSetting.Setting.GenJsonRootPath}/{$"Tb{typeof(T).Name}"}{ExcelReadSetting.Setting.GenJsonExName}";
+
+            List<T> configs = new List<T>();
+            using (FileStream fs = new FileStream(savePath, FileMode.Open, FileAccess.Read))
             {
-                if (configInfo.className == className)
-                {
-                    selInfo = configInfo;
-                    break;
-                }
+                byte[] byteArray = new byte[fs.Length];
+                fs.Read(byteArray, 0, byteArray.Length);
+                configs = MemoryPackSerializer.Deserialize<List<T>>(byteArray);
             }
 
-            if (selInfo == null)
-            {
-                Debug.LogError($"获得配置失败，没有对应配置>>{className}");
-                return null;
-            }
-            
-            ExcelExportSystem exportSystem = new ExcelExportSystem();
-            selInfo.isRead = true;
-            return exportSystem.Export<T>(selInfo);
+            return configs;
         }
     }
 }

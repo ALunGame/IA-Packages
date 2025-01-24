@@ -1,4 +1,3 @@
-using System.Collections;
 using UnityEngine;
 
 namespace IAEngine
@@ -28,7 +27,27 @@ namespace IAEngine
                     findTrans.gameObject.SetActive(pActive);
             }
         }
-        
+
+        public static void SetChildActive(this GameObject pGo, string pChildName, bool pActive)
+        {
+            if (pGo == null)
+                return;
+            if (string.IsNullOrEmpty(pChildName))
+                return;
+            for (int i = 0; i < pGo.transform.childCount; i++)
+            {
+                Transform childTrans = pGo.transform.GetChild(i);
+                if (childTrans.name == pChildName)
+                {
+                    childTrans.gameObject.SetActive(pActive);
+                }
+                else
+                {
+                    childTrans.gameObject.SetActive(!pActive);
+                }
+            }
+        }
+
         public static bool Find(this GameObject pGo, string pPath,out Transform pFindTrans)
         {
             pFindTrans = null;
