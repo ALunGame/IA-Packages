@@ -21,11 +21,11 @@ namespace IAEngine
         /// <returns></returns>
         public static bool Range(int pAddSeed = 0)
         {
-            return Range(0, 1) >= 1;
+            return Range(0, 1, pAddSeed) >= 1;
         }
 
         /// <summary>
-        /// 随机整数
+        /// 随机整数 最小数（包含）最大数（包含）
         /// </summary>
         /// <param name="pMin">最小数（包含）</param>
         /// <param name="pMax">最大数（包含）</param>

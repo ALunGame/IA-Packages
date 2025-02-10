@@ -1,13 +1,56 @@
 using System;
+using System.Collections.Generic;
 
 namespace IAEngine
 {
-    public class BindableValue<T> : IBindable
+    public class OwnerBindableValue
+    {
+        private List<InternalBindableValue> bindableValues = new List<InternalBindableValue>();
+
+        public void AddBindableValue(InternalBindableValue pValue)
+        {
+            if (!bindableValues.Contains(pValue))
+            {
+                bindableValues.Add(pValue);
+            }
+        }
+
+        public void ClearBindableEvent()
+        {
+            foreach (var field in bindableValues)
+            {
+                field.ClearEvent();
+            }
+        }
+
+        public void ClearBindableValues()
+        {
+            foreach (var field in bindableValues)
+            {
+                field.ClearEvent();
+            }
+            bindableValues.Clear();
+        }
+    }
+
+    public class InternalBindableValue
+    {
+        public InternalBindableValue(OwnerBindableValue pOwner)
+        {
+            pOwner.AddBindableValue(this);
+        }
+
+        public virtual void ClearEvent()
+        {
+
+        }
+    }
+
+    public class BindableValue<T> : InternalBindableValue
     {
         private T _value;
-
-        public T Value 
-        { 
+        public T Value
+        {
             get
             {
                 return _value;
@@ -16,40 +59,59 @@ namespace IAEngine
             {
                 if (Equals(Value, value))
                     return;
+                T oldValue = _value;
                 _value = value;
-                ValueChanged();
+                OnValueChanged(oldValue);
             }
         }
 
-        private event Action<T> onValueChanged;
+        private Action<T, T> changeNotifys = null;
 
-        public void ValueChanged()
+        public BindableValue(OwnerBindableValue pOwner, T pValue) : base(pOwner)
         {
-            if (onValueChanged != null)
-                onValueChanged.Invoke(Value);
+            _value = pValue;
         }
 
-        public void SetValueWithoutNotify(T value)
+        public BindableValue(OwnerBindableValue pOwner) : base(pOwner)
         {
-            if (Equals(Value, value))
+            _value = default;
+        }
+
+        private void OnValueChanged(T pOldValue)
+        {
+            if (changeNotifys != null)
+                changeNotifys.Invoke(Value, pOldValue);
+        }
+
+        public void SetValueWithoutNotify(T pValue)
+        {
+            if (Equals(Value, pValue))
                 return;
-            _value = value;
+            Value = pValue;
         }
 
-        public void RegisterValueChangedEvent(Action<T> onValueChanged)
+        /// <summary>
+        /// 注册改变
+        /// </summary>
+        /// <param name="pOnValueChanged"></param>
+        public void RegisterChanged(Action<T, T> pOnValueChanged)
         {
-            this.onValueChanged += onValueChanged;   
+            changeNotifys -= pOnValueChanged;
+            changeNotifys += pOnValueChanged;
         }
 
-        public void UnregisterValueChangedEvent(Action<T> onValueChanged)
+        /// <summary>
+        /// 清理改变
+        /// </summary>
+        /// <param name="pOnValueChanged"></param>
+        public void UnregisterChanged(Action<T, T> pOnValueChanged)
         {
-            this.onValueChanged -= onValueChanged;
+            changeNotifys -= pOnValueChanged;
         }
 
-        public virtual void ClearChangedEvent()
+        public override void ClearEvent()
         {
-            onValueChanged = null;
+            changeNotifys = null;
         }
-
     }
 }

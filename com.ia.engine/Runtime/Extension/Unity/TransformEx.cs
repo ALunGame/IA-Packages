@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace IAEngine
 {
@@ -17,6 +16,13 @@ namespace IAEngine
             pFindTrans = null;
             if (pTrans == null)
                 return false;
+
+            if (string.IsNullOrEmpty(pPath))
+            {
+                pFindTrans = pTrans;
+                return true;
+            }
+
             pFindTrans = pTrans.Find(pPath);
             if (pFindTrans == null)
                 return false;

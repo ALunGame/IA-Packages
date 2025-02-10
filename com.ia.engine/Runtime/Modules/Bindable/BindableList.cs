@@ -1,24 +1,54 @@
-using System.Collections;
-using UnityEngine;
-using System.Collections.Generic;
 using System;
+using System.Collections;
+using System.Collections.Generic;
 
 namespace IAEngine
 {
     /// <summary>
     /// 绑定集合类型
     /// </summary>
-    public class BindableList<T> : BindableValue<List<T>>, IEnumerable<T>, IList<T>
+    public class BindableList<T> : InternalBindableValue, IEnumerable<T>, IList<T>
     {
+        private List<T> _value;
+        public List<T> Value
+        {
+            get
+            {
+                return _value;
+            }
+            set
+            {
+                Clear();
+                _value = value;
+                if (_value.IsLegal())
+                {
+                    for (int i = 0; i < _value.Count; i++)
+                    {
+                        onAdded?.Invoke(_value[i]);
+                    }
+                }
+            }
+        }
+
         #region Fields
 
         private event Action<T> onAdded;
-        private event Action<int,T> onInserted;
+        private event Action<int, T> onInserted;
         private event Action<T> onRemoved;
         private event Action<T> onItemChanged;
         private event Action onClear;
 
         #endregion
+
+        public BindableList(OwnerBindableValue pOwner, List<T> pList) : base(pOwner)
+        {
+            _value = pList;
+        }
+
+        public BindableList(OwnerBindableValue pOwner) : base(pOwner)
+        {
+            _value = new List<T>();
+        }
 
         #region Override
 
@@ -85,6 +115,11 @@ namespace IAEngine
         {
             for (int i = 0; i < Value.Count; i++)
             {
+                if (Value[i] is InternalBindableValue)
+                {
+                    InternalBindableValue bindValue = Value[i] as InternalBindableValue;
+                    bindValue.ClearEvent();
+                }
                 RemoveAt(i);
             }
             Value.Clear();
@@ -99,18 +134,23 @@ namespace IAEngine
         IEnumerator IEnumerable.GetEnumerator()
         {
             return Value.GetEnumerator();
-        } 
+        }
 
         #endregion
 
-        public override void ClearChangedEvent()
+        public override void ClearEvent()
         {
-            base.ClearChangedEvent();
+            base.ClearEvent();
             onAdded = null;
             onInserted = null;
             onRemoved = null;
             onItemChanged = null;
             onClear = null;
+        }
+
+        public bool IsLegal()
+        {
+            return _value.IsLegal();
         }
 
         #region Private
@@ -128,92 +168,96 @@ namespace IAEngine
         /// <summary>
         /// 注册添加
         /// </summary>
-        /// <param name="onItemAdd"></param>
-        public void RegisterAdd(Action<T> onItemAdd)
+        /// <param name="pOnItemAdd"></param>
+        public void RegisterAdd(Action<T> pOnItemAdd)
         {
-            this.onAdded += onItemAdd;
+            this.onAdded -= pOnItemAdd;
+            this.onAdded += pOnItemAdd;
         }
 
         /// <summary>
         /// 清除添加
         /// </summary>
-        /// <param name="onItemAdd"></param>
-        public void UnregisterAdd(Action<T> onItemAdd)
+        /// <param name="pOnItemAdd"></param>
+        public void UnregisterAdd(Action<T> pOnItemAdd)
         {
-            this.onAdded -= onItemAdd;
+            this.onAdded -= pOnItemAdd;
         }
 
         /// <summary>
         /// 注册插入
         /// </summary>
-        /// <param name="onItemAdd"></param>
-        public void RegisterInserted(Action<int,T> onItemInserted)
+        /// <param name="pOnItemInserted"></param>
+        public void RegisterInserted(Action<int,T> pOnItemInserted)
         {
-            this.onInserted += onItemInserted;
+            this.onInserted -= pOnItemInserted;
+            this.onInserted += pOnItemInserted;
         }
 
         /// <summary>
         /// 清理插入
         /// </summary>
-        /// <param name="onItemAdd"></param>
-        public void UnregisterInserted(Action<int,T> onItemInserted)
+        /// <param name="pOnItemInserted"></param>
+        public void UnregisterInserted(Action<int,T> pOnItemInserted)
         {
-            this.onInserted -= onItemInserted;
+            this.onInserted -= pOnItemInserted;
         }
 
         /// <summary>
         /// 注册移除
         /// </summary>
-        /// <param name="onItemAdd"></param>
-        public void RegisterRemove(Action<T> onItemRemove)
+        /// <param name="pOnItemRemove"></param>
+        public void RegisterRemove(Action<T> pOnItemRemove)
         {
-            this.onRemoved += onItemRemove;
+            this.onRemoved -= pOnItemRemove;
+            this.onRemoved += pOnItemRemove;
         }
 
         /// <summary>
         /// 清理移除
         /// </summary>
-        /// <param name="onItemAdd"></param>
-        public void UnregisterRemove(Action<T> onItemRemove)
+        /// <param name="pOnItemRemove"></param>
+        public void UnregisterRemove(Action<T> pOnItemRemove)
         {
-            this.onRemoved -= onItemRemove;
+            this.onRemoved -= pOnItemRemove;
         }
 
         /// <summary>
         /// 注册改变
         /// </summary>
-        /// <param name="onItemAdd"></param>
-        public void RegisterItemChange(Action<T> onItemChanged)
+        /// <param name="pOnItemChanged"></param>
+        public void RegisterItemChange(Action<T> pOnItemChanged)
         {
-            this.onItemChanged += onItemChanged;
+            this.onItemChanged -= pOnItemChanged;
+            this.onItemChanged += pOnItemChanged;
         }
 
         /// <summary>
         /// 清理改变
         /// </summary>
-        /// <param name="onItemAdd"></param>
-        public void UnregisterItemChange(Action<T> onItemChanged)
+        /// <param name="pOnItemChanged"></param>
+        public void UnregisterItemChange(Action<T> pOnItemChanged)
         {
-            this.onItemChanged -= onItemChanged;
+            this.onItemChanged -= pOnItemChanged;
         }
-
 
         /// <summary>
         /// 注册清空
         /// </summary>
-        /// <param name="onItemAdd"></param>
-        public void RegisterClear(Action onClear)
+        /// <param name="pOnClear"></param>
+        public void RegisterClear(Action pOnClear)
         {
-            this.onClear += onClear;
+            this.onClear -= pOnClear;
+            this.onClear += pOnClear;
         }
 
         /// <summary>
         /// 清理清空
         /// </summary>
-        /// <param name="onItemAdd"></param>
-        public void UnregisterClear(Action onClear)
+        /// <param name="pOnClear"></param>
+        public void UnregisterClear(Action pOnClear)
         {
-            this.onClear -= onClear;
+            this.onClear -= pOnClear;
         }
 
         #endregion

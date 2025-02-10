@@ -52,6 +52,10 @@ namespace IAEngine
         /// <param name="pMaxCapacity"></param>
         public static void CreateGameObjectPool(string pPoolName, Func<GameObject> pCreateFunc, int pDefaultNum = 0, int pMaxCapacity = -1)
         {
+            if (HasGameObjectPool(pPoolName))
+            {
+                return;
+            }
             GameObjectPoolModule.CreateGameObjectPoolData(pPoolName, pCreateFunc, pDefaultNum, pMaxCapacity);
         }
 
@@ -76,7 +80,7 @@ namespace IAEngine
 
         public static GameObject GetGameObject(string pPoolName, Transform pParent = null)
         {
-            return GameObjectPoolModule.GetObject(pPoolName);
+            return GameObjectPoolModule.GetObject(pPoolName, pParent);
         }
 
         public static void PushGameObject(GameObject pGo)
