@@ -59,21 +59,20 @@ namespace IAEngine
             GameObjectPoolModule.CreateGameObjectPoolData(pPoolName, pCreateFunc, pDefaultNum, pMaxCapacity);
         }
 
-        public static bool HasObjectPool(string pPoolName)
+        public static bool HasObjectPool<T>()
         {
-            return ObjectPoolModule.HasPool(pPoolName);
+            return ObjectPoolModule.HasPool(typeof(T).FullName);
         }
 
         /// <summary>
         /// 创建Object对象池
         /// </summary>
-        /// <param name="pPoolName">缓存池名</param>
         /// <param name="pCreateFunc">创建Object函数</param>
         /// <param name="pDefaultNum"></param>
         /// <param name="pMaxCapacity"></param>
-        public static void CreatObjectPool(string pPoolName, Func<GameObject> pCreateFunc, int pDefaultNum = 0, int pMaxCapacity = -1)
+        public static void CreatObjectPool<T>(Func<T> pCreateFunc, int pDefaultNum = 0, int pMaxCapacity = -1)
         {
-            ObjectPoolModule.CreateGameObjectPoolData(pPoolName, pCreateFunc, pDefaultNum, pMaxCapacity);
+            ObjectPoolModule.CreateObjectPoolData(typeof(T).FullName, pCreateFunc, pDefaultNum, pMaxCapacity);
         }
 
         #region GameObject
@@ -103,34 +102,19 @@ namespace IAEngine
 
         #region Object
 
-        public static object GetObject(string pPoolName)
-        {
-            return ObjectPoolModule.GetObject(pPoolName);
-        }
-
-        public static object GetObject(System.Type pType)
-        {
-            return ObjectPoolModule.GetObject(pType);
-        }
-
         public static T GetObject<T>() where T : class
         {
             return ObjectPoolModule.GetObject<T>();
         }
 
-        public static T GetObject<T>(string pPoolName) where T : class
+        public static void PushObject<T>(T pObj)
         {
-            return ObjectPoolModule.GetObject<T>(pPoolName);
+            ObjectPoolModule.PushObject(typeof(T).FullName, pObj);
         }
 
-        public static void PushObject(string pPoolName, object pObj)
+        public static void ClearObjectPool<T>()
         {
-            ObjectPoolModule.PushObject(pPoolName, pObj);
-        }
-
-        public static void ClearObjectPool(string pPoolName)
-        {
-            ObjectPoolModule.Clear(pPoolName);
+            ObjectPoolModule.Clear(typeof(T).FullName);
         }
 
         #endregion

@@ -6,14 +6,14 @@ namespace IAEngine
 {
     internal class ObjectCachePoolModule
     {
-        private Dictionary<string, ObjectCachePoolData> poolDic = new Dictionary<string, ObjectCachePoolData>();
+        private Dictionary<string, InternalObjectCachePoolData> poolDic = new Dictionary<string, InternalObjectCachePoolData>();
 
         public bool HasPool(string pPoolName)
         {
             return poolDic.ContainsKey(pPoolName);
         }
 
-        public void CreateGameObjectPoolData(string pPoolName, Func<object> pCreateFunc, int pDefaultNum = 0, int pMaxCapacity = -1)
+        public void CreateObjectPoolData<T>(string pPoolName, Func<T> pCreateFunc, int pDefaultNum = 0, int pMaxCapacity = -1)
         {
             if (pDefaultNum > pMaxCapacity && pMaxCapacity != -1)
             {
@@ -27,8 +27,7 @@ namespace IAEngine
                 return;
             }
 
-            ObjectCachePoolData poolData = null;
-            poolData = new ObjectCachePoolData();
+            ObjectCachePoolData<T> poolData = new ObjectCachePoolData<T>();
             poolData.Init(pPoolName, pCreateFunc, pMaxCapacity);
             poolDic.Add(pPoolName, poolData);
 
@@ -67,37 +66,22 @@ namespace IAEngine
             }
         }
 
-        public object GetObject(string pPoolName)
+        public T GetObject<T>() where T : class
         {
             object obj = null;
             // 检查有没有这一层
-            if (poolDic.TryGetValue(pPoolName, out var poolData))
+            if (poolDic.TryGetValue(typeof(T).FullName, out var poolData))
             {
                 obj = poolData.GetObj();
             }
-            return obj;
-        }
-
-        public object GetObject(System.Type type)
-        {
-            return GetObject(type.FullName);
-        }
-
-        public T GetObject<T>() where T : class
-        {
-            return (T)GetObject(typeof(T));
-        }
-
-        public T GetObject<T>(string keyName) where T : class
-        {
-            return (T)GetObject(keyName);
+            return (T)obj;
         }
 
         public void Clear(string pPoolName)
         {
-            if (poolDic.TryGetValue(pPoolName, out var gameObjectPoolData))
+            if (poolDic.TryGetValue(pPoolName, out var objectPoolData))
             {
-                gameObjectPoolData.Desotry();
+                objectPoolData.Desotry();
                 poolDic.Remove(pPoolName);
             }
         }

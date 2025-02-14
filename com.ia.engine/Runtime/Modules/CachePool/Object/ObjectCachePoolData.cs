@@ -3,26 +3,44 @@ using System.Collections.Generic;
 
 namespace IAEngine
 {
-    internal class ObjectCachePoolData
+    internal class InternalObjectCachePoolData
+    {
+        public virtual bool PushObj(object pObj)
+        {
+            return true;
+        }
+
+        public virtual void Desotry()
+        {
+            
+        }
+
+        public virtual object GetObj()
+        {
+            return null;
+        }
+    }
+
+    internal class ObjectCachePoolData<T> : InternalObjectCachePoolData
     {
         // 对象容器
-        private Queue<object> poolQueue;
+        private Queue<T> poolQueue;
         // 容量限制 -1代表无限
         private int maxCapacity = -1;
-        private Func<object> createGoFunc;
+        private Func<T> createGoFunc;
 
-        public void Init(string pGoName, Func<object> pCreateGoFunc, int pCapacity = -1)
+        public void Init(string pGoName, Func<T> pCreateGoFunc, int pCapacity = -1)
         {
             createGoFunc = pCreateGoFunc;
             maxCapacity = pCapacity;
 
             if (pCapacity == -1)
             {
-                poolQueue = new Queue<object>();
+                poolQueue = new Queue<T>();
             }
             else
             {
-                poolQueue = new Queue<object>(pCapacity);
+                poolQueue = new Queue<T>(pCapacity);
             }
         }
 
@@ -38,7 +56,7 @@ namespace IAEngine
         /// <summary>
         /// 将对象放进对象池
         /// </summary>
-        public bool PushObj(object pObj)
+        public override bool PushObj(object pObj)
         {
             // 检测是不是超过容量
             if (maxCapacity != -1 && poolQueue.Count >= maxCapacity)
@@ -47,7 +65,7 @@ namespace IAEngine
             }
 
             // 对象进容器
-            poolQueue.Enqueue(pObj);
+            poolQueue.Enqueue((T)pObj);
             return true;
         }
 
@@ -55,7 +73,7 @@ namespace IAEngine
         /// 从对象池中获取对象
         /// </summary>
         /// <returns></returns>
-        public object GetObj()
+        public override object GetObj()
         {
             object obj = null;
             if (poolQueue.Count > 0)
@@ -72,7 +90,7 @@ namespace IAEngine
         /// <summary>
         /// 销毁层数据
         /// </summary>
-        public void Desotry()
+        public override void Desotry()
         {
             maxCapacity = -1;
             // 队列清理
