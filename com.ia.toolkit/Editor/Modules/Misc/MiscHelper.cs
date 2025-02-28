@@ -1,4 +1,5 @@
 ﻿using IAToolkit.Misc;
+using IAToolkit.UnityEditors;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -79,6 +80,16 @@ namespace IAToolkit
         public static void Input(string strContent, Action<string> callBack)
         {
             InputWindow.PopWindow(strContent, callBack);
+        }
+
+        /// <summary>
+        /// 弹出输入框
+        /// </summary>
+        /// <param name="strContent">内容</param>
+        /// <param name="callBack">输入回调</param>
+        public static void Input(string strContent, Action<string> callBack, Vector2 mousePosition)
+        {
+            InputWindow.PopWindow(strContent, callBack, mousePosition);
         }
 
         #endregion
@@ -322,7 +333,7 @@ namespace IAToolkit
             EditorGUILayout.BeginHorizontal();
             path = EditorGUILayout.TextField(label, path);
             Rect rect = GUILayoutUtility.GetLastRect();
-            UnityObject uObj = GUIExtension.DragDropAreaSingle(rect, DragAndDropVisualMode.Copy);
+            UnityObject uObj = EditorGUILayoutExtension.DragDropAreaSingle(rect, DragAndDropVisualMode.Copy);
             if (uObj != null && AssetDatabase.IsMainAsset(uObj))
             {
                 string p = AssetDatabase.GetAssetPath(uObj);
@@ -350,7 +361,7 @@ namespace IAToolkit
             EditorGUILayout.BeginHorizontal();
             folderPath = EditorGUILayout.TextField(label, folderPath);
             Rect rect = GUILayoutUtility.GetLastRect();
-            UnityObject uObj = GUIExtension.DragDropAreaSingle(rect, DragAndDropVisualMode.Copy);
+            UnityObject uObj = EditorGUILayoutExtension.DragDropAreaSingle(rect, DragAndDropVisualMode.Copy);
             if (uObj != null && AssetDatabase.IsMainAsset(uObj))
             {
                 string p = AssetDatabase.GetAssetPath(uObj);

@@ -2,6 +2,7 @@
 using UnityEditor;
 using UnityEngine;
 using IAToolkit;
+using IAToolkit.UnityEditors;
 
 namespace IAToolkit.Misc
 {
@@ -12,20 +13,21 @@ namespace IAToolkit.Misc
 
         private void OnGUI()
         {
-            GUILayoutExtension.VerticalGroup(() =>
-            {
-                InputStr = EditorGUILayout.TextField("请输入：", InputStr);
+            EditorGUILayoutExtension.BeginVerticalBoxGroup();
 
-                EditorGUILayout.Space();
+            InputStr = EditorGUILayout.TextField("请输入：", InputStr);
 
-                MiscHelper.Btn("确定", position.width * 0.9f, position.height * 0.5f, () => {
-                    if (CallBack != null && InputStr != "")
-                    {
-                        CallBack(InputStr);
-                        Close();
-                    }
-                });
+            EditorGUILayout.Space();
+
+            MiscHelper.Btn("确定", position.width * 0.9f, position.height * 0.5f, () => {
+                if (CallBack != null && InputStr != "")
+                {
+                    CallBack(InputStr);
+                    Close();
+                }
             });
+
+            EditorGUILayoutExtension.EndVerticalBoxGroup();
         }
 
         public static void PopWindow(string strContent, Action<string> callBack)
@@ -35,6 +37,15 @@ namespace IAToolkit.Misc
             {
                 rect = new Rect(Event.current.mousePosition, new Vector2(250, 80));
             }
+            InputWindow window = GetWindowWithRect<InputWindow>(rect, true, strContent);
+            //window.position = rect;
+            window.CallBack = callBack;
+            window.Focus();
+        }
+
+        public static void PopWindow(string strContent, Action<string> callBack, Vector2 mousePosition)
+        {
+            Rect rect = new Rect(mousePosition, new Vector2(250, 80));
             InputWindow window = GetWindowWithRect<InputWindow>(rect, true, strContent);
             //window.position = rect;
             window.CallBack = callBack;

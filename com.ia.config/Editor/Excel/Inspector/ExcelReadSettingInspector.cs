@@ -1,4 +1,5 @@
 using IAToolkit;
+using IAToolkit.UnityEditors;
 using UnityEditor;
 using UnityEngine;
 
@@ -28,12 +29,12 @@ namespace IAConfig.Excel.Inspector
                 BigLabel.value.stretchWidth = true;
             }
 
-            GUILayoutExtension.VerticalGroup(() =>
+            EditorGUILayoutExtension.VerticalGroup(() =>
             {
                 GUILayout.Label($"配置路径设置", BigLabel.value);
             });
 
-            GUILayoutExtension.VerticalGroup(() =>
+            EditorGUILayoutExtension.VerticalGroup(() =>
             {
                 string newPath = MiscHelper.FolderPath("表格读取目录:", settingAsset.ConfigRootPath);
                 if (newPath != settingAsset.ConfigRootPath)
@@ -42,8 +43,8 @@ namespace IAConfig.Excel.Inspector
                     EditorUtility.SetDirty(settingAsset);
                 }
             });
-            
-            GUILayoutExtension.VerticalGroup(() =>
+
+            EditorGUILayoutExtension.VerticalGroup(() =>
             {
                 string newPath = MiscHelper.FolderPath("代码生成目录:", settingAsset.GenCodeRootPath);
                 if (newPath != settingAsset.GenCodeRootPath)
@@ -52,8 +53,8 @@ namespace IAConfig.Excel.Inspector
                     EditorUtility.SetDirty(settingAsset);
                 }
             });
-            
-            GUILayoutExtension.VerticalGroup(() =>
+
+            EditorGUILayoutExtension.VerticalGroup(() =>
             {
                 string newPath = MiscHelper.FolderPath("Json生成目录:", settingAsset.GenJsonRootPath);
                 if (newPath != settingAsset.GenJsonRootPath)
@@ -62,8 +63,8 @@ namespace IAConfig.Excel.Inspector
                     EditorUtility.SetDirty(settingAsset);
                 }
             });
-            
-            GUILayoutExtension.VerticalGroup(() =>
+
+            EditorGUILayoutExtension.VerticalGroup(() =>
             {
                 string newPath = EditorGUILayout.TextField("Json生成后缀名:", settingAsset.GenJsonExName);
                 if (newPath != settingAsset.GenJsonExName)

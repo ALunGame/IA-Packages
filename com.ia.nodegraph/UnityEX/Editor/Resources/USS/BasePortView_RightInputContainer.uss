@@ -1,0 +1,92 @@
+﻿#input-container {
+    position: absolute;
+    left: 100%;
+    opacity: 0.6;
+    align-items: flex-start;
+    flex-direction: row;
+}
+
+#input-container > .port-input-element {
+    max-width: 500px;
+    height: 19px;
+    margin: 3px 0 2px;
+    padding: 1px 0 1px 1px;
+    background-color: rgba(72, 72, 72, 0.6);
+    border-radius: 0 4px 4px 0;
+    overflow: hidden;
+}
+
+#input-container > .port-input-element > * {
+    margin-right: 2px;
+    font-size: 10px;
+}
+
+/* 数值输入域 */
+#input-container > .port-input-element > IntegerField,
+#input-container > .port-input-element > FloatField {
+    min-width: 30px;
+    max-width: 100px;
+}
+
+/* 文本输入域 */
+#input-container > .port-input-element > TextField {
+    min-width: 50px;
+    max-width: 250px;
+}
+
+/* 特殊输入域 */
+#input-container > .port-input-element > CurveField { width: 100px; }
+#input-container > .port-input-element > ColorField { width: 60px; }
+
+/* 矢量字段标签 */
+#input-container > .port-input-element > Vector4Field Label,
+#input-container > .port-input-element > Vector3Field Label,
+#input-container > .port-input-element > Vector2Field Label {
+    font-size: 8px;
+    min-width: 8px;
+    flex-basis: 8px;
+    padding-top: 2px;
+    margin-right: 1px;
+}
+
+/* 矢量字段输入 */
+#input-container > .port-input-element > Vector4Field FloatInput,
+#input-container > .port-input-element > Vector3Field FloatInput,
+#input-container > .port-input-element > Vector2Field FloatInput {
+    min-width: 28px;
+}
+
+/* 对象选择器 */
+#input-container ObjectFieldSelector {
+    width: 17px;
+    height: 15px;
+    border-radius: 2px 0 0 2px;
+}
+
+#input-container ObjectFieldDisplay > Label {
+    margin-top: 2px;
+}
+
+#input-container ObjectFieldDisplay > Image {
+    margin: 0;
+}
+
+/* 输入框基础 */
+#input-container > .port-input-element IntegerInput,
+#input-container > .port-input-element FloatInput,
+#input-container > .port-input-element TextInput {
+    height: 15px;
+    padding-bottom: 1px;
+    border-radius: 0 1px 1px 0;
+}
+
+/* 空状态 */
+#input-container > .port-input-element.empty {
+    width: 0;
+    padding: 0;
+}
+
+/* 矢量字段间距 */
+#input-container > .port-input-element > Vector2Field .unity-composite-field__field-spacer {
+    flex-grow: 0.01;
+}
