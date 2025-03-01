@@ -129,10 +129,16 @@ namespace IANodeGraph.View
 
         protected virtual void BuildNodeMenu(NodeMenuWindow nodeMenu)
         {
-            foreach (var pair in GraphProcessorUtil.NodeStaticInfos)
+            foreach (var item in ViewModel.Model.GetNodeTypes())
             {
-                var nodeType = pair.Key;
-                var nodeStaticInfo = pair.Value;
+                if (!GraphProcessorUtil.NodeStaticInfos.ContainsKey(item))
+                {
+                    Debug.LogError($"创建节点菜单失败，该类型不是BaseNode:{item}");
+                    continue;
+                }
+
+                var nodeType = item;
+                var nodeStaticInfo = GraphProcessorUtil.NodeStaticInfos[item];
                 if (nodeStaticInfo.hidden)
                     continue;
 
