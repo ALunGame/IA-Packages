@@ -293,7 +293,16 @@ namespace IANodeGraph.Window
             {
                 CreateEdgeNodeMenu(tree);
             }
+            
             return tree;
+        }
+        
+        
+        public void ClearFilter()
+        {
+            ConnectionFilter = null;
+            WaitConnectPort = null;
+            WaitConnectIn = false;
         }
     }
 }

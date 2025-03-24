@@ -63,19 +63,32 @@ namespace IANodeGraph
         public string Lable;
         public string Tooltip;
         public PortDirection direction;
-        public PortCapacity capacity;
         public bool showDrawer;
+        public Type portType;
 
-        public NodeValueAttribute(string lable, bool showDrawer = false, PortDirection direction = PortDirection.Left, PortCapacity capacity = PortCapacity.Single, string tooltip = "")
+        public NodeValueAttribute(string lable, bool showDrawer = false, PortDirection direction = PortDirection.Left, 
+            string tooltip = "")
         {
             Lable = lable;
-            if (string.IsNullOrEmpty(""))
+            if (string.IsNullOrEmpty(tooltip))
                 Tooltip = lable;
             else
                 Tooltip = tooltip;
             this.direction = direction;
-            this.capacity = capacity;
             this.showDrawer = showDrawer;
+        }
+        
+        public NodeValueAttribute(string lable, Type portType, PortDirection direction = PortDirection.Left, 
+            string tooltip = "")
+        {
+            Lable = lable;
+            if (string.IsNullOrEmpty(tooltip))
+                Tooltip = lable;
+            else
+                Tooltip = tooltip;
+            this.direction = direction;
+            this.showDrawer = false;
+            this.portType = portType;
         }
     }
 }

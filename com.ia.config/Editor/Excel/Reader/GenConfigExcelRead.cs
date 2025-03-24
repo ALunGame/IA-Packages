@@ -21,14 +21,19 @@ namespace IAConfig
         public bool isRead = false;
 
         public object resValue;
-        public void SaveJson(object value)
+        
+        /// <summary>
+        /// 导出序列化配置
+        /// </summary>
+        /// <param name="value"></param>
+        public void ExportConfig(object value)
         {
             resValue = value;
             if (isRead)
             {
                 return;
             }
-            string savePath = $"{ExcelReadSetting.Setting.GenJsonRootPath}/{GetFileName()}";
+            string savePath = ExcelReadSetting.Setting.GetExportConfigPath(className);
             
             // string jsonStr = JsonMapper.ToJson(value);
             // IOHelper.WriteText(jsonStr,savePath);

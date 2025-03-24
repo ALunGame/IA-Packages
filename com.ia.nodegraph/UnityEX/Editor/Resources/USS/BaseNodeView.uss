@@ -11,20 +11,20 @@
 
 #node-border > #title {
     background-color: rgba(0, 0, 0, 0.0);
-    height: 25px;
+    height: auto;
 }
 
 #node-border > #title > #title-input {
     align-items: center;
     height: 100%;
-    width: 25px;
+    width: auto;
     padding: 3px;
 }
 
 #node-border > #title > #title-output {
     align-items: center;
     height: 100%;
-    width: 25px;
+    width: auto;
     padding: 3px;
 }
 

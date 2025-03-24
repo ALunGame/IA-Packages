@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.UIElements;
 using Cursor = UnityEngine.UIElements.Cursor;
 
-namespace IAToolkit.Element
+namespace IAToolkit
 {
     public static class Element_Help
     {
@@ -48,6 +48,19 @@ namespace IAToolkit.Element
             pElement.style.borderLeftWidth = pWidth;
             pElement.style.borderRightColor = new StyleColor(pColor);
             pElement.style.borderRightWidth = pWidth;
+        }
+        
+        /// <summary>
+        /// 设置边距
+        /// </summary>
+        /// <param name="pElement"></param>
+        /// <param name="pWidth"></param>
+        public static void MarginWidth(this VisualElement pElement, float pWidth)
+        {
+            pElement.style.marginTop = pWidth;
+            pElement.style.marginBottom = pWidth;
+            pElement.style.marginLeft = pWidth;
+            pElement.style.marginRight = pWidth;
         }
         
         

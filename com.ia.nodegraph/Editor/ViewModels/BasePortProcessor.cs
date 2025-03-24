@@ -39,7 +39,10 @@ namespace IANodeGraph.Model
     public class BasePort
     {
         public string name;
+
+        public string label;
         public string toolTip;
+        
         public PortDirection direction;
         public PortCapacity capacity;
         public bool showDrawer;
@@ -47,9 +50,10 @@ namespace IANodeGraph.Model
         public string fieldName;
         public Type portType;
 
-        public BasePort(string name, string toolTip, bool showDrawer, PortDirection direction, PortCapacity capacity, Type type = null)
+        public BasePort(string name, string label, string toolTip, bool showDrawer, PortDirection direction, PortCapacity capacity, Type type = null)
         {
             this.name = name;
+            this.label = label;
             this.direction = direction;
             this.capacity = capacity;
             this.portType = type;
@@ -72,6 +76,8 @@ namespace IANodeGraph.Model
         public event Action<BaseConnectionProcessor> onBeforeDisconnected;
         public event Action<BaseConnectionProcessor> onAfterDisconnected;
         public event Action onConnectionChanged;
+        
+        public Action<string, object> onDrawerPortValueChange;
 
         public BindableValue<Type> portType;
         public BindableValue<bool> HideLabel;
@@ -88,6 +94,8 @@ namespace IANodeGraph.Model
         Type IGraphElementProcessor.ModelType => modelType;
 
         public string Name => model.name;
+        
+        public string Label => model.label;
 
         public string ToolTip => model.toolTip;
 
@@ -104,20 +112,20 @@ namespace IANodeGraph.Model
         public BasePortProcessor(BasePort model)
         {
             this.model = model;
-            this.modelType = typeof(BasePort);
+            this.modelType = model.GetType();
 
             InitBindableValues();
         }
 
-        public BasePortProcessor(string name, PortDirection direction, PortCapacity capacity, Type type = null, string toolTip = "", bool showDrawer = false)
+        public BasePortProcessor(string name, string label, PortDirection direction, PortCapacity capacity, Type type = null, string toolTip = "", bool showDrawer = false)
         {
-            this.model = new BasePort(name, toolTip, showDrawer, direction, capacity, type)
+            this.model = new BasePort(name, label, toolTip, showDrawer, direction, capacity, type)
             {
                 name = name,
                 direction = direction,
                 capacity = capacity
             };
-            this.modelType = typeof(BasePort);
+            this.modelType = model.GetType();
 
             InitBindableValues();
         }

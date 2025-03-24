@@ -147,6 +147,7 @@ namespace IANodeGraph.View
 
         private void Uninit()
         {
+            Debug.Log("Uninit--->");
             this.Query<GraphElement>().ForEach(element =>
             {
                 if (element is IGraphElementView bindableView)
@@ -481,6 +482,7 @@ namespace IANodeGraph.View
 
         private void NodeCreationRequest(NodeCreationContext c)
         {
+            NodeMenuWindow.ClearFilter();
             ShowNodeMenuWindow(c.screenMousePosition);
             //var nodeMenu = ScriptableObject.CreateInstance<NodeMenuWindow>();
             //nodeMenu.Initialize("Nodes", this);

@@ -15,18 +15,13 @@ using MemoryPack;
 
 namespace IAConfig
 {
-    public static class Config
+    public static partial class Config
     {
         #CNFSTR#
 
         public static void Preload()
         {
 #PRELOAD#
-        }
-
-        public static void Reload()
-        {
-#RELOADVALUE#
         }
     }
 }";
@@ -49,10 +44,8 @@ namespace IAConfig
             {
                 if (#NAME01# == null)
                 {
-                    Byte[] byteArray = GameEnv.Asset.LoadBytes(""#NAME03#"");
-                    List<#TYPE#> configs = MemoryPackSerializer.Deserialize<List<#TYPE#>>(byteArray);
                     #NAME01# = new #CLASS#();
-                    #NAME01#.AddConfig(configs);
+                    #NAME01#.Load();
                 }
                 return #NAME01#;
             }
@@ -89,14 +82,14 @@ namespace IAConfig
                 }
 
                 //Reload
-                string reloadStr = RelaodCode;
-                reloadStr = Regex.Replace(reloadStr, "#NAME#", "_" + item.className) + "\n";
-                reloadValue += reloadStr;
+                // string reloadStr = RelaodCode;
+                // reloadStr = Regex.Replace(reloadStr, "#NAME#", "_" + item.className) + "\n";
+                // reloadValue += reloadStr;
             }
             resStr = Regex.Replace(resStr, "#USINGNAME#", usingNameStr);
             resStr = Regex.Replace(resStr, "#PRELOAD#", preloadValue);
             resStr = Regex.Replace(resStr, "#CNFSTR#", cnfStr);
-            resStr = Regex.Replace(resStr, "#RELOADVALUE#", reloadValue);
+            // resStr = Regex.Replace(resStr, "#RELOADVALUE#", reloadValue);
 
             //生成
             IOHelper.WriteText(resStr, ExcelReadSetting.RunningRootPath+"/Config.cs");

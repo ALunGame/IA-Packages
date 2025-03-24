@@ -3,6 +3,7 @@ using IAToolkit.Misc;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+using IANodeGraph.View;
 using UnityEngine;
 
 namespace IANodeGraph.Model
@@ -99,7 +100,20 @@ namespace IANodeGraph.Model
             {
                 if (AttributeHelper.TryGetFieldAttribute(item, out NodeValueAttribute attr))
                 {
-                    BasePort port = new BasePort(attr.Lable, attr.Tooltip, attr.showDrawer, attr.direction, attr.capacity, item.FieldType);
+                    BasePort port = null;
+                    
+                    PortCapacity capacity = BaseGraphView.IsArrayOrList(item.FieldType) ? PortCapacity.Multi : PortCapacity.Single;
+                    
+                    if (attr.portType == null)
+                    {
+                        port = new BasePort(item.Name, attr.Lable, attr.Tooltip, attr.showDrawer, attr.direction, capacity, item.FieldType);
+                    }
+                    else
+                    {
+                        port = Activator.CreateInstance(attr.portType, item.Name, attr.Lable, attr.Tooltip, attr.showDrawer,
+                            attr.direction, capacity, item.FieldType) as BasePort;
+                    }
+                    
                     port.fieldName = item.Name;
                     AddPort(port);
                 }

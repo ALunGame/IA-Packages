@@ -98,7 +98,7 @@ namespace #KEY#
                 }
                 
                 //创建代码
-                IOHelper.WriteText(usingStr+allClassStr,ExcelReadSetting.Setting.GenCodeRootPath + $"/TbCustomClass_{i}.cs");
+                IOHelper.WriteText(usingStr+allClassStr,ExcelReadSetting.Setting.GetGenTableCodeRootPath() + $"/TbCustomClass_{i}.cs");
             }
             
             tPackage.Dispose();

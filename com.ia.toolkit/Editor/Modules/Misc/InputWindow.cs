@@ -32,11 +32,9 @@ namespace IAToolkit.Misc
 
         public static void PopWindow(string strContent, Action<string> callBack)
         {
-            Rect rect = new Rect(new Vector2(0, 0), new Vector2(250, 80));
-            if (Event.current != null)
-            {
-                rect = new Rect(Event.current.mousePosition, new Vector2(250, 80));
-            }
+            Vector2 mousePos = Event.current.mousePosition;
+            Vector2 screenPos = GUIUtility.GUIToScreenPoint(mousePos);
+            Rect rect = new Rect(screenPos, new Vector2(250, 80));
             InputWindow window = GetWindowWithRect<InputWindow>(rect, true, strContent);
             //window.position = rect;
             window.CallBack = callBack;

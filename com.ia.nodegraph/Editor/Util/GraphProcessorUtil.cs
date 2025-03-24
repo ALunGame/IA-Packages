@@ -94,7 +94,7 @@ namespace IANodeGraph
                     nodeStaticInfo.path = t.Name;
                     nodeStaticInfo.menu = new string[] { t.Name };
                     nodeStaticInfo.title = t.Name;
-                    nodeStaticInfo.hidden = false;
+                    nodeStaticInfo.hidden = true;
                 }
 
                 var titleAttribute = t.GetCustomAttribute(typeof(NodeTitleAttribute)) as NodeTitleAttribute;
@@ -154,11 +154,6 @@ namespace IANodeGraph
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static T ModelAs<T>(this IGraphElementProcessor graphElement) where T : class
-        {
-            return graphElement.Model as T;
-        }
-
-        public static T Model<T>(this IGraphElementProcessor<T> graphElement) where T : class
         {
             return graphElement.Model as T;
         }

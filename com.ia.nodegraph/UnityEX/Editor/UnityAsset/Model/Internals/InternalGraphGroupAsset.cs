@@ -1,9 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 
 namespace IANodeGraph.Model.Internal
 {
+    public class GraphExportInfo
+    {
+        public InternalBaseGraphAsset Asset;
+        public BaseGraph Graph;
+    }
+    
     public abstract class InternalGraphGroupAsset : ScriptableObject
     {
         public abstract string DisplayName { get; }
@@ -12,7 +19,21 @@ namespace IANodeGraph.Model.Internal
         /// 获得所有视图
         /// </summary>
         /// <returns></returns>
+        public abstract List<string> GetAllGraphFileName();
+
+        /// <summary>
+        /// 获得所有视图
+        /// </summary>
+        /// <returns></returns>
         public abstract List<InternalBaseGraphAsset> GetAllGraph();
+
+        /// <summary>
+        /// 加载指定视图
+        /// </summary>
+        /// <typeparam name="TGraphAsset"></typeparam>
+        /// <param name="pAssetName"></param>
+        /// <returns></returns>
+        public abstract InternalBaseGraphAsset LoadGraphAsset(string pAssetName);
 
         /// <summary>
         /// 检测存在
@@ -46,23 +67,42 @@ namespace IANodeGraph.Model.Internal
         {
             GraphGroupPath path                  = GraphSetting.Setting.GetSearchPath(this.GetType().FullName);
             List<InternalGraphGroupAsset> groups = GraphSetting.Setting.GetGroups(path.searchPath);
-            List<InternalBaseGraphAsset> assets = new List<InternalBaseGraphAsset>();
 
+            List<GraphExportInfo> allInfos = new List<GraphExportInfo>();
+            
             foreach (InternalGraphGroupAsset group in groups)
             {
                 if (group.GetType() == GetType())
                 {
-                    assets.AddRange(group.GetAllGraph());
+                    List<GraphExportInfo> groupInfos = new List<GraphExportInfo>();
+                    List<InternalBaseGraphAsset> tAssets = group.GetAllGraph();
+                    foreach (var asset in tAssets)
+                    {
+                        groupInfos.Add(new GraphExportInfo(){Asset = asset, Graph = asset.LoadGraph()});
+                    }
+                    ExportGroupGraphs(groupInfos);
+                    
+                    allInfos.AddRange(groupInfos);
                 }
             }
 
-            this.ExportGraph(assets);
+            this.ExportAllGroupGraphs(allInfos);
+            
+            EditorUtility.SetDirty(this);
+            AssetDatabase.SaveAssets();
+            AssetDatabase.Refresh();
         }
 
         /// <summary>
-        /// 导出视图
+        /// 导出此分组的视图
         /// </summary>
-        /// <param name="graph"></param>
-        public abstract void ExportGraph(List<InternalBaseGraphAsset> assets);
+        /// <param name="pInfos"></param>
+        public abstract void ExportGroupGraphs(List<GraphExportInfo> pInfos);
+
+        /// <summary>
+        /// 导出所有分组视图
+        /// </summary>
+        /// <param name="pAllInfos"></param>
+        public abstract void ExportAllGroupGraphs(List<GraphExportInfo> pAllInfos);
     }
 }

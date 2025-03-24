@@ -437,10 +437,10 @@ namespace IANodeGraph.Model
         BasePortProcessor port;
         bool successed = false;
 
-        public AddPortCommand(BaseNodeProcessor node, string name, PortDirection direction, PortCapacity capacity, Type type = null)
+        public AddPortCommand(BaseNodeProcessor node, string name, string label, PortDirection direction, PortCapacity capacity, Type type = null)
         {
             this.node = node;
-            port = new BasePortProcessor(name, direction, capacity, type);
+            port = new BasePortProcessor(name, label, direction, capacity, type);
         }
 
         public void Do()

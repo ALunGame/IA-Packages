@@ -1,6 +1,5 @@
 ﻿using IANodeGraph.Model;
 using IANodeGraph.Model.Internal;
-using IANodeGraph.View;
 using IANodeGraph.Window;
 using System;
 using System.Collections.Generic;
@@ -31,7 +30,7 @@ namespace IANodeGraph
     public class GraphSetting : ScriptableObject
     {
         //地图设置文件目录
-        public const string SetingPath = "Assets/Editor/Graph/Setting";
+        public const string SettingPath = "Assets/Editor/Graph/Setting";
 
         public List<GraphGroupPath> groupPaths = new List<GraphGroupPath>();
 
@@ -59,6 +58,26 @@ namespace IANodeGraph
             return null;
         }
 
+        public List<T> GetGroups<T>() where T : InternalGraphGroupAsset
+        {
+            GraphGroupPath graphGroupPath = GetSearchPath(typeof(T).FullName);
+            if (graphGroupPath == null)
+            {
+                return new List<T>();
+            }
+
+            List<T> resList = new List<T>();
+            List<InternalGraphGroupAsset> groups = GetGroups(graphGroupPath.searchPath);
+            for (int i = 0; i < groups.Count; i++)
+            {
+                if (groups[i] is T)
+                {
+                    resList.Add(groups[i] as T);
+                }
+            }
+            return resList;
+        }
+
         public List<InternalGraphGroupAsset> GetGroups(string groupPath)
         {
             List<InternalGraphGroupAsset> groups = new List<InternalGraphGroupAsset>();
@@ -74,6 +93,29 @@ namespace IANodeGraph
                 }
             }
             return groups;
+        }
+
+        public TGraphAsset LoadGraphAsset<TGroup,TGraphAsset>(string pGraphAssetName) where TGraphAsset : InternalBaseGraphAsset where TGroup : InternalGraphGroupAsset
+        {
+            List<TGroup> groups = GetGroups<TGroup>();
+            if (groups.Count <= 0)
+            {
+                return null;
+            }
+
+            for (int i = 0; i < groups.Count; i++)
+            {
+                List<string> assetNames = groups[i].GetAllGraphFileName();
+                foreach (var name in assetNames)
+                {
+                    if (name == pGraphAssetName)
+                    {
+                        return groups[i].LoadGraphAsset(pGraphAssetName) as TGraphAsset;
+                    }
+                }
+            }
+
+            return null;
         }
 
         public List<T> GetGroupAssets<T>(string groupPath) where T : InternalBaseGraphAsset
@@ -118,7 +160,7 @@ namespace IANodeGraph
             {
                 if (setting == null)
                 {
-                    string[] tileAssetPath = new string[] { SetingPath };
+                    string[] tileAssetPath = new string[] { SettingPath };
                     string[] guids = AssetDatabase.FindAssets("t:ScriptableObject", tileAssetPath);
                     foreach (var guid in guids)
                     {
@@ -144,13 +186,13 @@ namespace IANodeGraph
         [MenuItem("Tools/视图/设置")]
         public static void CreateSetting()
         {
-            if (!Directory.Exists(SetingPath))
+            if (!Directory.Exists(SettingPath))
             {
-                Directory.CreateDirectory(SetingPath);
+                Directory.CreateDirectory(SettingPath);
             }
             GraphSetting setting = CreateInstance<GraphSetting>();
             setting.name = "视图设置";
-            AssetDatabase.CreateAsset(setting, SetingPath + "/视图设置.asset");
+            AssetDatabase.CreateAsset(setting, SettingPath + "/视图设置.asset");
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
             Selection.activeObject = setting;

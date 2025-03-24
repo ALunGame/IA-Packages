@@ -1,0 +1,12 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <ui:VisualElement class="main-view">
+        <ui:TwoPaneSplitView fixed-pane-initial-dimension="300">
+            <ui:VisualElement class="split-window" style="color: rgb(0, 0, 0); -unity-background-image-tint-color: rgba(0, 0, 0, 0); background-color: rgb(63, 63, 63); border-left-color: rgb(48, 48, 48); border-right-color: rgb(55, 55, 55); border-top-color: rgb(55, 55, 55); border-bottom-color: rgb(55, 55, 55); border-top-width: 3px; border-right-width: 3px; border-bottom-width: 3px; border-left-width: 3px; border-top-left-radius: 5px; border-top-right-radius: 5px; border-bottom-right-radius: 5px; border-bottom-left-radius: 5px;">
+                <ui:VisualElement name="LeftPanel" class="section-container" />
+            </ui:VisualElement>
+            <ui:VisualElement class="split-window" style="background-color: rgb(41, 41, 41); border-top-width: 3px; border-right-width: 3px; border-bottom-width: 3px; border-left-width: 3px; border-top-left-radius: 5px; border-top-right-radius: 5px; border-bottom-right-radius: 5px; border-bottom-left-radius: 5px; border-left-color: rgb(38, 37, 37); border-top-color: rgb(39, 37, 37); border-right-color: rgb(39, 37, 37); border-bottom-color: rgb(39, 37, 37);">
+                <ui:VisualElement name="RightPanel" class="section-container" />
+            </ui:VisualElement>
+        </ui:TwoPaneSplitView>
+    </ui:VisualElement>
+</ui:UXML>

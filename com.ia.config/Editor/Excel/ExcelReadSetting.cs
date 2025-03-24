@@ -1,4 +1,5 @@
 using System.IO;
+using IAConfig.Excel.GenCode;
 using UnityEditor;
 using UnityEngine;
 
@@ -31,7 +32,45 @@ namespace IAConfig.Excel
         /// Json文件后缀名
         /// </summary>
         public string GenJsonExName = ".txt";
+        
+        /// <summary>
+        /// 获取Table代码生成目录
+        /// </summary>
+        /// <returns></returns>
+        public string GetGenTableCodeRootPath()
+        {
+            string dirPath = GenCodeRootPath + "/Table/";
+            if (!Directory.Exists(dirPath))
+            {
+                Directory.CreateDirectory(dirPath);
+            }
+            return dirPath;
+        }
+        
+        /// <summary>
+        /// 获取Cfg代码生成目录
+        /// </summary>
+        /// <returns></returns>
+        public string GetGenCfgCodeRootPath()
+        {
+            string dirPath = GenCodeRootPath + "/Cfg/";
+            if (!Directory.Exists(dirPath))
+            {
+                Directory.CreateDirectory(dirPath);
+            }
+            return dirPath;
+        }
 
+        public string GetExportConfigPath(string pClassName)
+        {
+            string savePath = $"{GenJsonRootPath}/{GetExportConfigFileName(pClassName)}";
+            return savePath;
+        }
+        
+        public string GetExportConfigFileName(string pClassName)
+        {
+            return $"{ExcelGenCode.Tb}{pClassName}{GenJsonExName}";
+        }
 
         #region Static
 

@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -5,29 +7,13 @@ namespace IANodeGraph.Editors
 {
     public static class GraphProcessorEditorStyles
     {
-        public static Styles DefaultStyles { get; private set; } = new Styles()
-        {
-            GraphWindowTree = Resources.Load<VisualTreeAsset>("UXML/GraphWindow"),
-
-            BasicStyle = Resources.Load<StyleSheet>("USS/BasicStyle"),
-            BaseGraphViewStyle = Resources.Load<StyleSheet>("USS/BaseGraphView"),
-            BaseNodeViewStyle = Resources.Load<StyleSheet>("USS/BaseNodeView"),
-            BaseSimpleNodeViewStyle = Resources.Load<StyleSheet>("USS/BaseSimpleNodeView"),
-
-            BasePortViewStyle = Resources.Load<StyleSheet>("USS/BasePortView"),
-            BasePortViewStyle_LeftInputContainer = Resources.Load<StyleSheet>("USS/BasePortView_LeftInputContainer"),
-            BasePortViewStyle_RightInputContainer = Resources.Load<StyleSheet>("USS/BasePortView_RightInputContainer"),
-
-            BaseConnectionViewStyle = Resources.Load<StyleSheet>("USS/BaseConnectionView"),
-            GroupViewStyle = Resources.Load<StyleSheet>("USS/GroupView"),
-            StickyNodeStyle = Resources.Load<StyleSheet>("USS/StickyNodeView"),
-            StickyNoteStyle = Resources.Load<StyleSheet>("USS/StickyNoteView"),
-        };
+        public const string UXMLRootPath = "Packages/com.ia.nodegraph/UnityEX/Editor/Resources/UXML/";
+        public const string USSRootPath = "Packages/com.ia.nodegraph/UnityEX/Editor/Resources/USS/";
 
         public class Styles
         {
             public VisualTreeAsset GraphWindowTree;
-            
+
             public StyleSheet BasicStyle;
             public StyleSheet BaseGraphViewStyle;
             public StyleSheet BaseNodeViewStyle;
@@ -41,6 +27,76 @@ namespace IANodeGraph.Editors
             public StyleSheet GroupViewStyle;
             public StyleSheet StickyNodeStyle;
             public StyleSheet StickyNoteStyle;
+        }
+
+        public static Styles DefaultStyles { get; private set; } = new Styles()
+        {
+            GraphWindowTree = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>($"{UXMLRootPath}GraphWindow.uxml"),
+
+            BasicStyle = AssetDatabase.LoadAssetAtPath<StyleSheet>($"{USSRootPath}BasicStyle.uss"),
+            BaseGraphViewStyle = AssetDatabase.LoadAssetAtPath<StyleSheet>($"{USSRootPath}BaseGraphView.uss"),
+            BaseNodeViewStyle = AssetDatabase.LoadAssetAtPath<StyleSheet>($"{USSRootPath}BaseNodeView.uss"),
+            BaseSimpleNodeViewStyle = AssetDatabase.LoadAssetAtPath<StyleSheet>($"{USSRootPath}BaseSimpleNodeView.uss"),
+
+            BasePortViewStyle = AssetDatabase.LoadAssetAtPath<StyleSheet>($"{USSRootPath}BasePortView.uss"),
+            BasePortViewStyle_LeftInputContainer = AssetDatabase.LoadAssetAtPath<StyleSheet>($"{USSRootPath}BasePortView_LeftInputContainer.uss"),
+            BasePortViewStyle_RightInputContainer = AssetDatabase.LoadAssetAtPath<StyleSheet>($"{USSRootPath}BasePortView_RightInputContainer.uss"),
+
+            BaseConnectionViewStyle = AssetDatabase.LoadAssetAtPath<StyleSheet>($"{USSRootPath}BaseConnectionView.uss"),
+            GroupViewStyle = AssetDatabase.LoadAssetAtPath<StyleSheet>($"{USSRootPath}GroupView.uss"),
+            StickyNodeStyle = AssetDatabase.LoadAssetAtPath<StyleSheet>($"{USSRootPath}StickyNodeView.uss"),
+            StickyNoteStyle = AssetDatabase.LoadAssetAtPath<StyleSheet>($"{USSRootPath}StickyNoteView.uss"),
+        };
+
+
+        private static Dictionary<string, VisualTreeAsset> UXMLDict = null;
+        public static VisualTreeAsset LoadUXML(string pUXMLName)
+        {
+            if (UXMLDict == null)
+            {
+                UXMLDict = new Dictionary<string, VisualTreeAsset>();
+                string[] searchGuids = AssetDatabase.FindAssets("t:VisualTreeAsset", new string[] { $"{UXMLRootPath}" });
+                for (int i = 0; i < searchGuids.Length; i++)
+                {
+                    string path = AssetDatabase.GUIDToAssetPath(searchGuids[i]);
+                    VisualTreeAsset asset = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>(path);
+                    if (asset != null)
+                    {
+                        UXMLDict.Add(asset.name, asset);
+                    }
+                }
+            }
+
+            if (!UXMLDict.ContainsKey(pUXMLName))
+            {
+                return null;
+            }
+            return UXMLDict[pUXMLName];
+        }
+
+        private static Dictionary<string, StyleSheet> StyleDict = null;
+        public static StyleSheet LoadStyle(string pStyleName)
+        {
+            if (StyleDict == null)
+            {
+                StyleDict = new Dictionary<string, StyleSheet>();
+                string[] searchGuids = AssetDatabase.FindAssets("t:StyleSheet", new string[] { $"{USSRootPath}" });
+                for (int i = 0; i < searchGuids.Length; i++)
+                {
+                    string path = AssetDatabase.GUIDToAssetPath(searchGuids[i]);
+                    StyleSheet asset = AssetDatabase.LoadAssetAtPath<StyleSheet>(path);
+                    if (asset != null)
+                    {
+                        StyleDict.Add(asset.name, asset);
+                    }
+                }
+            }
+
+            if (!StyleDict.ContainsKey(pStyleName))
+            {
+                return null;
+            }
+            return StyleDict[pStyleName];
         }
     }
 }

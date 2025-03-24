@@ -28,6 +28,14 @@ namespace IANodeGraph.Inspector
                     settingAsset.groupPaths.Add(new GraphGroupPath(item));
                 }
             }
+
+            for (int i = 0; i < settingAsset.groupPaths.Count; i++)
+            {
+                if (System.Type.GetType(settingAsset.groupPaths[i].typeFullName) == null)
+                {
+                    settingAsset.groupPaths.RemoveAt(i);
+                }
+            }
         }
 
         public override void OnInspectorGUI()

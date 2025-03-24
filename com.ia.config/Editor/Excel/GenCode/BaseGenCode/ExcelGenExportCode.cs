@@ -31,7 +31,7 @@ namespace IAConfig.Excel.GenCode
                 cnfs.Add(cnf);
             }
                 
-            pGenInfo.SaveJson(cnfs);    
+            pGenInfo.ExportConfig(cnfs);    
         }
 ";
             string setPropStr = "";

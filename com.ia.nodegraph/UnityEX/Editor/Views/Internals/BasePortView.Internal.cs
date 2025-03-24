@@ -22,9 +22,9 @@ namespace IANodeGraph.View
         public Label PortLabel { get; }
         public VisualElement Connector { get; }
         public VisualElement ConnectorCap { get; }
-        public VisualElement InputContainer { get; private set; }
-        public BaseGraphView GraphView { get; private set; }
-        public BasePortProcessor ViewModel { get; private set; }
+        public VisualElement InputContainer { get; protected set; }
+        public BaseGraphView GraphView { get; protected set; }
+        public BasePortProcessor ViewModel { get; protected set; }
         public Dictionary<BaseConnectionProcessor, BaseConnectionView> ConnectionViews { get; private set; }
 
         protected BasePortView(Orientation orientation, Direction direction, Capacity capacity, Type type, IEdgeConnectorListener connectorListener) : base(orientation, direction, capacity, type)
@@ -72,7 +72,7 @@ namespace IANodeGraph.View
             ViewModel = port;
             GraphView = graphView;
 
-            portName = ViewModel.Name;
+            portName = ViewModel.Label;
             tooltip = ViewModel.ToolTip;
 
             if (ViewModel.HideLabel.Value)
@@ -146,10 +146,10 @@ namespace IANodeGraph.View
             {
                 GraphView.CommandDispatcher.Do(new ChangeNodeValueCommand(ViewModel.Owner.Model, fieldInfo, var, () =>
                 {
-
+                    ViewModel.onDrawerPortValueChange?.Invoke(fieldInfo.Name, fieldInfo.GetValue(ViewModel.Owner.Model));
                 }, () =>
                 {
-
+                    ViewModel.onDrawerPortValueChange?.Invoke(fieldInfo.Name, fieldInfo.GetValue(ViewModel.Owner.Model));
                 }));
             });
             if (element != null)

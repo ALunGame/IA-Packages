@@ -72,11 +72,36 @@ namespace IANodeGraph.View
 
         #endregion
 
+        /// <summary>
+        /// 创建水平分割线
+        /// </summary>
+        /// <returns></returns>
+        public VisualElement CreateHorDividerElement()
+        {
+            VisualElement dividerElement = new VisualElement();
+            dividerElement.name = "divider";
+            dividerElement.AddToClassList("horizontal");
+            dividerElement.style.display = DisplayStyle.Flex;
+            return dividerElement;
+        }
+
+        /// <summary>
+        /// 创建垂直分割线
+        /// </summary>
+        /// <returns></returns>
+        public VisualElement CreateVerDividerElement()
+        {
+            VisualElement dividerElement = new VisualElement();
+            dividerElement.name = "divider";
+            dividerElement.AddToClassList("vertical");
+            dividerElement.style.display = DisplayStyle.Flex;
+            return dividerElement;
+        }
+
         public BaseNodeView()
         {
             styleSheets.Add(GraphProcessorEditorStyles.DefaultStyles.BaseNodeViewStyle);
             
-
             var contents = mainContainer.Q("contents");
 
             nodeBorder = this.Q(name: "node-border");
@@ -134,9 +159,13 @@ namespace IANodeGraph.View
                 var portView = NewPortView(port);
                 portView.SetUp(port, Owner);
                 portViews[port.Name] = portView;
-                if (port.Name == ConstValues.FLOW_IN_PORT_NAME)
+                
+                if (port.Label.Contains(ConstValues.FLOW_IN_PORT_NAME))
                 {
+                    portView.portName = port.ToolTip.Contains(ConstValues.FLOW_IN_PORT_NAME) ? "" : port.ToolTip;
+                    
                     titleInputPortContainer.Add(portView);
+                    titleInputPortContainer.Add(CreateHorDividerElement());
                 }
                 else
                 {
@@ -162,9 +191,12 @@ namespace IANodeGraph.View
                 portView.SetUp(port, Owner);
                 portViews[port.Name] = portView;
 
-                if (port.Name == ConstValues.FLOW_OUT_PORT_NAME)
+                if (port.Label.Contains(ConstValues.FLOW_OUT_PORT_NAME))
                 {
+                    portView.portName = port.ToolTip.Contains(ConstValues.FLOW_OUT_PORT_NAME) ? "" : port.ToolTip;
+                    
                     titleOutputPortContainer.Add(portView);
+                    titleOutputPortContainer.Add(CreateHorDividerElement());
                 }
                 else
                 {
@@ -183,13 +215,13 @@ namespace IANodeGraph.View
                     }
                 }
             }
-
-            OnInitialized();
-
+            
             RefreshPorts();
             RefreshPortContainer();
             RefreshControls();
             RefreshContentsHorizontalDivider();
+            
+            OnInitialized();
         }
 
         private void OnChildChanged(BaseVisualElement.ChildChangedEvent evt)
@@ -350,6 +382,18 @@ namespace IANodeGraph.View
                 else
                     bottomPortContainer.Add(portView);
             }
+        }
+        
+        public BasePortView GetPortViewByFieldName(string pFieldName)
+        {
+            foreach (BasePortView view in PortViews.Values)
+            {
+                if (view.ViewModel.Model.fieldName.Equals(pFieldName))
+                {
+                    return view;
+                }
+            }
+            return null;
         }
 
         private void RemovePortView(BasePortProcessor port)

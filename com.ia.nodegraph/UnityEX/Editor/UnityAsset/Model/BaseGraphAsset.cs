@@ -16,7 +16,7 @@ namespace IANodeGraph.Model
         [HideInInspector]
         [SerializeField]
         [TextArea(20, 20)]
-        string serializedGraph = String.Empty;
+        private string serializedGraph = string.Empty;
 
         public override void SaveGraph(BaseGraph graph)
         {
@@ -25,15 +25,29 @@ namespace IANodeGraph.Model
 
         public override BaseGraph LoadGraph()
         {
-            var graph = JsonConvert.DeserializeObject<BaseGraph>(serializedGraph, GraphProcessorEditorUtil.JsonSetting);
-            if (graph == null)
+            BaseGraph graph;
+            try
+            {
+                graph = JsonConvert.DeserializeObject<BaseGraph>(serializedGraph, GraphProcessorEditorUtil.JsonSetting);
+                if (graph == null)
+                    graph = new GraphClass();
+            }
+            catch (Exception ex)
+            {
                 graph = new GraphClass();
+                Debug.LogError($"Error deserializing graph: {ex}");
+            }
             return graph;
         }
 
         public override string GetSerializedStr()
         {
             return serializedGraph;
+        }
+
+        public override void ClearSerializedStr()
+        {
+            serializedGraph = "";
         }
 
         #endregion

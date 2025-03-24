@@ -13,7 +13,7 @@ namespace IANodeGraph.Editors
 
         public static JsonSerializerSettings JsonSetting = new JsonSerializerSettings()
         {
-            TypeNameHandling = TypeNameHandling.Auto,
+            TypeNameHandling = TypeNameHandling.All,
         };
 
         static GraphProcessorEditorUtil()

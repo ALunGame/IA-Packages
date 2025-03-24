@@ -76,7 +76,7 @@ namespace #KEY#
                 }
                 
                 //创建代码
-                IOHelper.WriteText(allClassStr,ExcelReadSetting.Setting.GenCodeRootPath + $"/TbCustomEnum_{i}.cs");
+                IOHelper.WriteText(allClassStr,ExcelReadSetting.Setting.GetGenTableCodeRootPath() + $"/TbCustomEnum_{i}.cs");
             }
             
             tPackage.Dispose();

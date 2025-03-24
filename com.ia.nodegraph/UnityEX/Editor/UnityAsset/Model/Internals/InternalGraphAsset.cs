@@ -9,5 +9,6 @@ namespace IANodeGraph.Model.Internal
         public abstract void SaveGraph(BaseGraph graph);
         public abstract BaseGraph LoadGraph();
         public abstract string GetSerializedStr();
+        public abstract void ClearSerializedStr();
     }
 }

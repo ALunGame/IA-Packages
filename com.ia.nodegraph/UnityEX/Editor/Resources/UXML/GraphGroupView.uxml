@@ -1,0 +1,21 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="True">
+    <ui:VisualElement class="main-view">
+        <ui:VisualElement name="ToolBar" enabled="true" style="flex-grow: 0; flex-direction: row; height: 35px; border-left-color: rgb(0, 0, 0); border-right-color: rgb(0, 0, 0); border-top-color: rgb(0, 0, 0); border-bottom-color: rgb(0, 0, 0); border-top-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-left-width: 1px; flex-shrink: 0;">
+            <ui:VisualElement name="Left" style="flex-grow: 1; height: 35px; flex-direction: row; align-items: center;">
+                <ui:Button text="展开全部" name="ExpanAllBtn" style="width: 69px; height: 25px; -unity-font-style: bold;" />
+                <ui:Button text="折叠全部" name="FoldAllBtn" style="width: 69px; height: 25px; -unity-font-style: bold;" />
+            </ui:VisualElement>
+            <ui:VisualElement name="Right" style="flex-grow: 1; height: 35px; flex-direction: row-reverse; align-items: center;">
+                <ui:Button text="保存" name="SaveBtn" style="width: 114px; height: 25px; -unity-font-style: bold;" />
+                <ui:Button text="删除视图" name="RemoveBtn" style="width: 69px; height: 25px; -unity-font-style: bold;" />
+                <ui:Button text="添加视图" name="AddBtn" style="width: 69px; height: 25px; -unity-font-style: bold;" />
+            </ui:VisualElement>
+        </ui:VisualElement>
+        <ui:VisualElement name="Search" class="search-container" style="flex-direction: row; height: 25px; justify-content: space-between; border-left-color: rgb(0, 0, 0); border-right-color: rgb(0, 0, 0); border-top-color: rgb(0, 0, 0); border-bottom-color: rgb(0, 0, 0); border-right-width: 1.3px; border-left-width: 1.3px; border-bottom-width: 1.3px;">
+            <ui:Label text="视图名:" style="-unity-text-align: middle-center; -unity-font-style: bold;" />
+            <ui:TextField name="searchInput" placeholder="请输入关键词..." style="width: 221px; background-color: rgba(0, 0, 0, 0); margin-left: auto; margin-right: auto; flex-grow: 1; border-left-color: rgb(0, 0, 0); border-right-color: rgb(0, 0, 0); border-top-color: rgb(0, 0, 0); border-bottom-color: rgb(0, 0, 0); border-top-width: 1.5px; border-right-width: 1.5px; border-bottom-width: 1.5px; border-left-width: 1.5px;" />
+            <ui:Button text="搜索" name="searchButton" style="flex-grow: 0; flex-direction: row; flex-shrink: 0; align-items: stretch; justify-content: space-between; -unity-font-style: bold;" />
+        </ui:VisualElement>
+        <ui:TreeView name="GraphTree" reorderable="true" selection-type="Multiple" class="team-list" style="border-left-color: rgb(0, 0, 0); border-right-color: rgb(0, 0, 0); border-top-color: rgb(0, 0, 0); border-bottom-color: rgb(0, 0, 0); border-left-width: 1px; border-right-width: 1px; border-bottom-width: 1px;" />
+    </ui:VisualElement>
+</ui:UXML>

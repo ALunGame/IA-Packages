@@ -1,6 +1,8 @@
 ﻿using IANodeGraph.Editors;
 using IANodeGraph.Model;
+using IANodeGraph.Model.Internal;
 using IAToolkit.Command;
+using IAToolkit.Element;
 using IAToolkit.UnityEditors;
 using Newtonsoft.Json;
 using System;
@@ -16,6 +18,33 @@ using UnityObject = UnityEngine.Object;
 
 namespace IANodeGraph.View
 {
+    public class BaseGraphDisplayInfo
+    {
+        public IGraphAsset graphAsset;
+        public BaseGraphProcessor graphProcessor;
+        public CommandDispatcher commandDispatcher;
+
+        public BaseGraphView graphView;
+        public IVisualElementScheduledItem graphViewScheduledItem;
+
+        public BaseGraphDisplayInfo(IGraphAsset pGraphAsset)
+        {
+            graphAsset = pGraphAsset;
+            graphProcessor = ViewModelFactory.ProduceViewModel(graphAsset.LoadGraph()) as BaseGraphProcessor;
+            commandDispatcher = new CommandDispatcher();
+        }
+
+        public void Show()
+        {
+            graphViewScheduledItem?.Resume();
+        }
+
+        public void Hide()
+        {
+            graphViewScheduledItem?.Pause();
+        }
+    }
+
     public abstract class BaseGraphWindow : BaseEditorWindow
     {
         #region Fields
@@ -26,11 +55,8 @@ namespace IANodeGraph.View
         private VisualElement graphViewContainer;
         private VisualElement inspectorView;
 
-        [SerializeField] private UnityObject unityGraphAsset;
-        private IGraphAsset graphAsset;
-        private BaseGraphProcessor graphProcessor;
-        private BaseGraphView graphView;
-        private CommandDispatcher commandDispatcher;
+        private BaseGraphDisplayInfo currGraphDisplayInfo;
+        private Stack<BaseGraphDisplayInfo> graphDisplayInfoStack = new Stack<BaseGraphDisplayInfo>();
 
         #endregion
 
@@ -45,21 +71,13 @@ namespace IANodeGraph.View
 
         public Toolbar ToolbarRight => toolbarRight;
 
-        public IGraphAsset GraphAsset
-        {
-            get { return graphAsset; }
-            protected set
-            {
-                graphAsset = value;
-                unityGraphAsset = graphAsset as UnityObject;
-            }
-        }
+        public IGraphAsset GraphAsset => currGraphDisplayInfo.graphAsset;
 
-        public BaseGraphProcessor GraphProcessor => graphProcessor;
+        public BaseGraphProcessor GraphProcessor => currGraphDisplayInfo.graphProcessor;
 
-        public CommandDispatcher CommandDispatcher => commandDispatcher;
+        public CommandDispatcher CommandDispatcher => currGraphDisplayInfo.commandDispatcher;
 
-        public BaseGraphView GraphView => graphView;
+        public BaseGraphView GraphView => currGraphDisplayInfo.graphView;
 
         #endregion
 
@@ -109,41 +127,51 @@ namespace IANodeGraph.View
         {
         }
 
-        protected void Load(BaseGraphProcessor graph, IGraphAsset graphAsset)
+        protected void Load(BaseGraphDisplayInfo pGraphDisplayInfo)
         {
             Clear();
 
-            BeforeLoad(graph, graphAsset);
+            currGraphDisplayInfo = pGraphDisplayInfo;
 
-            this.commandDispatcher = new CommandDispatcher();
-            this.graphProcessor = graph;
-            this.GraphAsset = graphAsset;
+            BeforeLoad(pGraphDisplayInfo.graphProcessor, pGraphDisplayInfo.graphAsset);
 
-            this.graphView = NewGraphView();
-            this.graphView.SetUp(GraphProcessor, new GraphViewContext() { window = this, commandDispatcher = commandDispatcher });
-            this.graphView.Init();
-            this.GraphViewContainer.Add(graphView);
-
-            graphView.schedule.Execute(() =>
+            //复用视图
+            if (currGraphDisplayInfo.graphView != null)
             {
-                foreach (var pair in graphView.NodeViews)
+                this.GraphViewContainer.Add(currGraphDisplayInfo.graphView);
+                this.currGraphDisplayInfo.Show();
+            }
+            else
+            {
+                BaseGraphView newGraphView = NewGraphView();
+                currGraphDisplayInfo.graphView = newGraphView;
+
+                newGraphView.SetUp(GraphProcessor, new GraphViewContext() { window = this, commandDispatcher = currGraphDisplayInfo.commandDispatcher });
+                newGraphView.Init();
+                this.GraphViewContainer.Add(newGraphView);
+
+                currGraphDisplayInfo.graphViewScheduledItem = newGraphView.schedule.Execute(() =>
                 {
-                    if (!graphView.worldBound.Overlaps(pair.Value.worldBound))
+                    foreach (var pair in newGraphView.NodeViews)
                     {
-                        pair.Value.controls.visible = false;
+                        if (!newGraphView.worldBound.Overlaps(pair.Value.worldBound))
+                        {
+                            pair.Value.controls.visible = false;
+                        }
+                        else
+                        {
+                            pair.Value.controls.visible = true;
+                        }
                     }
-                    else
-                    {
-                        pair.Value.controls.visible = true;
-                    }
-                }
-            }).Every(50);
+                }).Every(50);
+
+                AfterLoad();
+            }
+
             BuildToolBar();
 
             GraphProcessorEditorSettings.MiniMapActive.onValueChanged += OnMiniMapActiveChanged;
             OnMiniMapActiveChanged(GraphProcessorEditorSettings.MiniMapActive.Value);
-
-            AfterLoad();
         }
 
         protected virtual void AfterLoad()
@@ -152,7 +180,7 @@ namespace IANodeGraph.View
 
         protected void OnMiniMapActiveChanged(bool newValue)
         {
-            graphView.MiniMapActive = newValue;
+            currGraphDisplayInfo.graphView.MiniMapActive = newValue;
         }
 
         #endregion
@@ -166,10 +194,11 @@ namespace IANodeGraph.View
             ToolbarRight.Clear();
             GraphViewContainer.Clear();
 
-            graphProcessor = null;
-            graphView = null;
-            GraphAsset = null;
-            commandDispatcher = null;
+            //graphProcessor = null;
+            //graphView = null;
+            //graphAsset = null;
+            //commandDispatcher = null;
+            currGraphDisplayInfo = null;
 
             GraphProcessorEditorSettings.MiniMapActive.onValueChanged -= OnMiniMapActiveChanged;
 
@@ -179,36 +208,22 @@ namespace IANodeGraph.View
         // 重新加载Graph
         public virtual void Reload()
         {
-            if (graphAsset != null)
+            if (currGraphDisplayInfo != null)
             {
-                LoadFromGraphAsset(graphAsset);
+                Load(currGraphDisplayInfo);
             }
-            else if (GraphProcessor is BaseGraphProcessor graphVM)
+            else
             {
-                LoadFromGraphVM(graphVM);
-            }
-            else if (this.unityGraphAsset != null)
-            {
-                AssetDatabase.OpenAsset(this.unityGraphAsset);
+                //Debug.LogError($"Reload失败，没有GraphAsset");
             }
         }
 
         // 从Graph资源加载
         public void LoadFromGraphAsset(IGraphAsset graphAsset)
         {
-            Load(ViewModelFactory.ProduceViewModel(graphAsset.LoadGraph()) as BaseGraphProcessor, graphAsset);
-        }
-
-        // 直接加载GraphVM对象
-        public void LoadFromGraphVM(BaseGraphProcessor graph)
-        {
-            Load(graph, null);
-        }
-
-        // 直接加载Graph对象
-        public void LoadFromGraph(BaseGraph graph)
-        {
-            Load(ViewModelFactory.ProduceViewModel(graph) as BaseGraphProcessor, null);
+            BaseGraphDisplayInfo graphDisplayInfo = new BaseGraphDisplayInfo(graphAsset);
+            graphDisplayInfoStack.Push(graphDisplayInfo);
+            Load(graphDisplayInfo);
         }
 
         public void SetHasUnsavedChanges(bool value)
@@ -236,7 +251,12 @@ namespace IANodeGraph.View
 
         protected virtual BaseGraphView NewGraphView()
         {
-            return new DefaultGraphView();
+            Type graphViewType = GraphProcessorEditorUtil.GetViewType(currGraphDisplayInfo.graphProcessor.ModelType);
+            if (graphViewType == null)
+            {
+                return new DefaultGraphView();
+            }
+            return Activator.CreateInstance(GraphProcessorEditorUtil.GetViewType(currGraphDisplayInfo.graphProcessor.ModelType)) as BaseGraphView;
         }
 
         protected virtual void OnKeyDownCallback(KeyDownEvent evt)
@@ -267,18 +287,19 @@ namespace IANodeGraph.View
 
         protected virtual void OnBtnCopyClick()
         {
+            BaseGraphView currView = currGraphDisplayInfo.graphView;
             List<BaseNode> nodes = new List<BaseNode>();
 
-            for (int i = 0; i < graphView.selection.Count; i++)
+            for (int i = 0; i < currView.selection.Count; i++)
             {
-                var selItem = graphView.selection[i];
+                var selItem = currView.selection[i];
                 if (selItem is BaseNodeView)
                 {
                     nodes.Add(((BaseNodeView)selItem).ViewModel.Model);
                 }
             }
 
-            int startId = graphView.ViewModel.NewID();
+            int startId = currView.ViewModel.NewID();
             //计算连接
             Dictionary<int, BaseNode> nodeDict = new Dictionary<int, BaseNode>();
             Vector2Int offsetPos = new Vector2Int(20, 100);
@@ -293,7 +314,7 @@ namespace IANodeGraph.View
                 nodeDict.Add(oldNode.id, ((BaseNode)newNode));
             }
 
-            List<BaseConnection> oldConnections = graphView.ViewModel.Model.connections;
+            List<BaseConnection> oldConnections = currView.ViewModel.Model.connections;
 
             List<BaseConnection> newConnections = new List<BaseConnection>();
             foreach (var connection in oldConnections)
@@ -318,7 +339,7 @@ namespace IANodeGraph.View
             }
 
             //最后执行添加操作
-            graphView.CommandDispatcher.Do(new CopyCommand(GraphProcessor, nodeDict.Values.ToList(), newConnections));
+            currView.CommandDispatcher.Do(new CopyCommand(GraphProcessor, nodeDict.Values.ToList(), newConnections));
         }
 
         protected virtual void OnBtnSaveClick()
@@ -353,24 +374,10 @@ namespace IANodeGraph.View
             };
             togMiniMap.clicked += () => { GraphProcessorEditorSettings.MiniMapActive.Value = !GraphProcessorEditorSettings.MiniMapActive.Value; };
             ToolbarLeft.Add(togMiniMap);
-
-            if (graphAsset != null && graphAsset is UnityObject)
+            
+            if (currGraphDisplayInfo != null)
             {
-                IMGUIContainer drawName = new IMGUIContainer(() =>
-                {
-                    GUILayout.BeginHorizontal();
-
-                    if (unityGraphAsset != null)
-                    {
-                        EditorGUILayout.ObjectField(unityGraphAsset, typeof(UnityObject), true, GUILayout.Height(25));
-                    }
-
-                    GUILayout.Space(2);
-                    GUILayout.EndHorizontal();
-                });
-                drawName.style.height = new StyleLength(new Length(100, LengthUnit.Percent));
-                drawName.style.flexGrow = 1;
-                ToolbarCenter.Add(drawName);
+                CreateGraphStackItemViews();
             }
 
             var btnReload = new ToolbarButton()
@@ -400,6 +407,83 @@ namespace IANodeGraph.View
             };
             btnSave.clicked += OnBtnSaveClick;
             ToolbarRight.Add(btnSave);
+        }
+
+        private  GUIStyle BreadCrumbLeft = "GUIEditor.BreadcrumbLeft";
+        private  GUIStyle BreadCrumbMid = "GUIEditor.BreadcrumbMid";
+        private  GUIStyle BreadCrumbLeftBg = "GUIEditor.BreadcrumbLeftBackground";
+        private  GUIStyle BreadCrumbMidBg = "GUIEditor.BreadcrumbMidBackground";
+        private void CreateGraphStackItemViews()
+        {
+            ToolbarCenter.Add(new IMGUIContainer(() =>
+            {
+                GUILayout.BeginHorizontal(EditorStyles.toolbar);
+
+                BaseGraphDisplayInfo[] displayInfos = graphDisplayInfoStack.ToArray();
+                for (int i = displayInfos.Length - 1; i >= 0; i--)
+                {
+                    var displayInfo = displayInfos[i];
+                    var asset = displayInfo.graphAsset as InternalBaseGraphAsset;
+
+                    GUIStyle style1 = i == displayInfos.Length - 1 ? BreadCrumbLeft : BreadCrumbMid;
+                    GUIStyle style2 = i == displayInfos.Length - 1 ? BreadCrumbLeftBg : BreadCrumbMidBg;
+
+                    GUIContent guiContent = new GUIContent($"{asset.name}");
+                    Rect rect = GetLayoutRect(guiContent, style1);
+                    rect.position += new Vector2(1, 0);
+                    rect.size += new Vector2(10, 5);
+
+                    if (Event.current.type == EventType.Repaint)
+                        style2.Draw(rect, GUIContent.none, 0);
+
+                    if (GUI.Button(rect, guiContent, style1))
+                    {
+                        if (displayInfo.graphAsset != GraphAsset)
+                            OnBtnGraphStackClick(displayInfo);
+                    }
+                }
+
+                GUILayout.EndHorizontal();
+            }));
+        }
+
+        private Rect GetLayoutRect(GUIContent content, GUIStyle style)
+        {
+            Texture image = content.image;
+            content.image = null;
+
+            Vector2 vector = style.CalcSize(content);
+            content.image = image;
+
+            if (image != null) 
+                vector.x += vector.y;
+            GUILayoutOption[] options = { GUILayout.MaxWidth(vector.x), GUILayout.MaxHeight(vector.y) };
+            return GUILayoutUtility.GetRect(content, style, options);
+        }
+
+        protected virtual void OnBtnGraphStackClick(BaseGraphDisplayInfo pDisplayInfo)
+        {
+            int clickIndex = 0;
+
+            BaseGraphDisplayInfo[] displayInfos = graphDisplayInfoStack.ToArray();
+
+            for (int i = 0; i < displayInfos.Length; i++)
+            {
+                var tInfo = displayInfos[i];
+                if (tInfo.Equals(pDisplayInfo))
+                {
+                    clickIndex = i;
+                    break;
+                }
+            }
+
+            graphDisplayInfoStack.Clear();
+            for (int i = displayInfos.Length - 1; i >= clickIndex; i--)
+            {
+                graphDisplayInfoStack.Push(displayInfos[i]);
+            }
+
+            Load(pDisplayInfo);
         }
 
         #endregion
@@ -435,22 +519,6 @@ namespace IANodeGraph.View
         {
             var window = GetGraphWindow(graphAsset.GraphType);
             window.LoadFromGraphAsset(graphAsset);
-            return window;
-        }
-
-        /// <summary> 打开Graph </summary>
-        public static BaseGraphWindow Open(BaseGraphProcessor graph)
-        {
-            var window = GetGraphWindow(graph.ModelType);
-            window.LoadFromGraphVM(graph);
-            return window;
-        }
-
-        /// <summary> 打开Graph </summary>
-        public static BaseGraphWindow Open(BaseGraph graph)
-        {
-            var window = GetGraphWindow(graph.GetType());
-            window.LoadFromGraph(graph);
             return window;
         }
 

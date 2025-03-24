@@ -97,8 +97,8 @@ namespace IAConfig.Excel.Export
             //配置代码
             string tbStr     = tbGen.GenTbCode(props);
             string classStr  = classGen.GenClassCode(props,pInfo);
-            IOHelper.WriteText(tbStr,ExcelReadSetting.Setting.GenCodeRootPath + "/Tb" +pInfo.className+".cs");
-            IOHelper.WriteText(classStr,ExcelReadSetting.Setting.GenCodeRootPath + "/" +pInfo.className+".cs");
+            IOHelper.WriteText(tbStr,ExcelReadSetting.Setting.GetGenTableCodeRootPath() + "Tb" +pInfo.className+".cs");
+            IOHelper.WriteText(classStr,ExcelReadSetting.Setting.GetGenCfgCodeRootPath() + "" +pInfo.className+".cs");
 
             //导出代码
             string exportStr = exportGen.GenExportCode(sheets, props, propDict);

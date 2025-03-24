@@ -24,6 +24,22 @@ namespace #KEY#
     }
 ";
 
+        private const string loadFun1Str = @"
+        public void Load()
+        {
+            Byte[] byteArray = IAFramework.GameEnv.Asset.LoadBytes(""Tb#CLASSNAME#"");
+            List<#CLASSNAME#> configs = MemoryPack.MemoryPackSerializer.Deserialize<List<#CLASSNAME#>>(byteArray);
+            AddConfig(configs);
+        }
+";
+        private const string reLoadFun2Str = @"
+        public void ReLoad()
+        {
+            Clear();
+            Load();
+        }
+";
+        
         private const string fun1Str = @"
         public void AddConfig(#FUNC1PARAM#)
         {
@@ -76,11 +92,13 @@ namespace #KEY#
                 
             }
 
-            string classDefStr = ExcelGenCode.Tb + className + " : Dictionary<#KEY#, #VALUE#>";
+            string classDefStr = ExcelGenCode.Tb + className + " : Dictionary<#KEY#, #VALUE#>, IAConfig.IConfigItem";
             classDefStr = Regex.Replace(classDefStr, "#KEY#", keyProps[0].TypeName);
             classDefStr = Regex.Replace(classDefStr, "#VALUE#", GenValueStr(keyProps));
 
             string classCodeContentStr = "";
+            classCodeContentStr += Regex.Replace(loadFun1Str, "#CLASSNAME#", className);
+            classCodeContentStr += reLoadFun2Str;
             classCodeContentStr += GenFunc1(fun1Str, keyProps, className);
             classCodeContentStr += GenFunc2(fun2Str, keyProps, className);
 

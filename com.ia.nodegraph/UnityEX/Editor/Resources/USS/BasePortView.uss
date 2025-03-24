@@ -4,6 +4,7 @@
     padding-left: 5px;
     padding-right: 5px;
     --port-color: #ffc400;
+    /*height: auto;*/
 }
 
 .port > #type {
@@ -54,13 +55,13 @@
     --port-color: #00FFFF;
 }
 
-#title-input > .port > #type {
-    display: none;
-}
+/*#title-input > .port > #type {*/
+/*    display: none;*/
+/*}*/
 
-#title-output > .port > #type {
-    display: none;
-}
+/*#title-output > .port > #type {*/
+/*    display: none;*/
+/*}*/
 
 #title-input > .port > #connector {
     border-top-left-radius: 0px;

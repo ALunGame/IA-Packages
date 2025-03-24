@@ -129,17 +129,14 @@ namespace IANodeGraph.View
 
         protected virtual void BuildNodeMenu(NodeMenuWindow nodeMenu)
         {
-            foreach (var item in ViewModel.Model.GetNodeTypes())
+            foreach (var item in GraphProcessorUtil.NodeStaticInfos)
             {
-                if (!GraphProcessorUtil.NodeStaticInfos.ContainsKey(item))
-                {
-                    Debug.LogError($"创建节点菜单失败，该类型不是BaseNode:{item}");
-                    continue;
-                }
-
-                var nodeType = item;
-                var nodeStaticInfo = GraphProcessorUtil.NodeStaticInfos[item];
+                var nodeType = item.Key;
+                var nodeStaticInfo = GraphProcessorUtil.NodeStaticInfos[nodeType];
                 if (nodeStaticInfo.hidden)
+                    continue;
+
+                if (!ViewModel.Model.CheckNodeDisplay(nodeType))
                     continue;
 
                 var path = nodeStaticInfo.path;
@@ -184,16 +181,59 @@ namespace IANodeGraph.View
             return IsCompatible(toPortView.ViewModel.portType.Value, fromPortView.ViewModel.portType.Value);
         }
 
+        /// <summary>
+        /// 判断端口是否可以连接
+        /// </summary>
+        /// <param name="pToPortType"></param>
+        /// <param name="pFromPortType"></param>
+        /// <returns></returns>
         public virtual bool IsCompatible(Type pToPortType, Type pFromPortType)
         {
             if ((pToPortType == null) || (pFromPortType == null))
                 return false;
 
+            pToPortType = GetArrayOrListItemType(pToPortType) ?? pToPortType;
+            pFromPortType = GetArrayOrListItemType(pFromPortType) ?? pFromPortType;
+            
             // 类型兼容查询
             if (!pToPortType.IsAssignableFrom(pFromPortType) && !pFromPortType.IsAssignableFrom(pToPortType))
                 return false;
 
             return true;
+        }
+
+        /// <summary>
+        /// 是数组或者
+        /// </summary>
+        /// <param name="pType"></param>
+        /// <returns></returns>
+        public static bool IsArrayOrList(Type pType)
+        {
+            if (pType.IsArray)
+                return true;
+            else if (pType.IsGenericType && pType.GetGenericTypeDefinition() == typeof(List<>)) 
+                return true;
+            return false;
+        }
+
+        /// <summary>
+        /// 获取数组或List的元素类型
+        /// </summary>
+        /// <param name="pType"></param>
+        /// <returns></returns>
+        public static Type GetArrayOrListItemType(Type pType)
+        {
+            if (pType.IsArray)
+            {
+                Type elementType = pType.GetElementType();
+                return elementType;
+            }
+            else if (pType.IsGenericType && pType.GetGenericTypeDefinition() == typeof(List<>)) 
+            {
+                Type elementType = pType.GetGenericArguments()[0];
+                return elementType;
+            }
+            return null;
         }
     }
 }

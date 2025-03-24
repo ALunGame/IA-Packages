@@ -34,6 +34,13 @@ namespace IANodeGraph.Inspector
             {
                 GUIUtility.systemCopyBuffer = graphAsset.GetSerializedStr();
             }
+            
+            if (GUILayout.Button("ClearJson", GUILayout.Height(30)))
+            {
+                graphAsset.ClearSerializedStr();
+                EditorUtility.SetDirty(target as InternalBaseGraphAsset);
+                AssetDatabase.SaveAssetIfDirty(target as InternalBaseGraphAsset);
+            }
         }
     }
 }

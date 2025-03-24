@@ -11,5 +11,7 @@ namespace IANodeGraph
         BaseGraph LoadGraph();
 
         string GetSerializedStr();
+        
+        void ClearSerializedStr();
     }
 }
