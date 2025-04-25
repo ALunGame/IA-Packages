@@ -30,12 +30,12 @@ namespace IANodeGraph.Inspector
             if (GUILayout.Button("Open", GUILayout.Height(30)))
                 BaseGraphWindow.Open(target as InternalBaseGraphAsset);
 
-            if (GUILayout.Button("CopyJson", GUILayout.Height(30)))
+            if (GUILayout.Button("复制序列化数据到剪切板", GUILayout.Height(30)))
             {
                 GUIUtility.systemCopyBuffer = graphAsset.GetSerializedStr();
             }
             
-            if (GUILayout.Button("ClearJson", GUILayout.Height(30)))
+            if (GUILayout.Button("清空序列化数据", GUILayout.Height(30)))
             {
                 graphAsset.ClearSerializedStr();
                 EditorUtility.SetDirty(target as InternalBaseGraphAsset);

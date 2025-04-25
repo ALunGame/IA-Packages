@@ -1,5 +1,8 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
+using IAEngine;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -13,13 +16,17 @@ namespace IAToolkit.UnityEditors
         public ObjectInspector Source => (ObjectInspector)SourceEditor.target;
 
         public object Target => Source.target;
+        public object UserData => Source.userData;
         
         public MonoScript Script { get; private set; }
-
+        
+        protected IReadOnlyList<FieldInfo> Fields { get; private set; }
+        
         void Initialize(ObjectInspectorEditor sourceEditor)
         {
             SourceEditor = sourceEditor;
             Script = EditorUtilityExtension.FindScriptFromType(Target.GetType());
+            Fields = ReflectionHelper.GetFieldInfos(Target.GetType()).Where(field => EditorGUILayoutExtension.CanDraw(field)).ToList();
         }
 
         public virtual string GetTitle()

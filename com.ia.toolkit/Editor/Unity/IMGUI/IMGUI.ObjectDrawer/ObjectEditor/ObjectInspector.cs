@@ -6,24 +6,36 @@ namespace IAToolkit.UnityEditors
 {
     public class ObjectInspector : ScriptableObject
     {
+        #region Static
+
+        public static ObjectInspector objectEditor;
+
+        public static ObjectInspector Show(object pTargetData, object pUserData = null)
+        {
+            if (objectEditor == null)
+            {
+                objectEditor = ScriptableObject.CreateInstance<ObjectInspector>();
+            }
+            objectEditor.target = pTargetData;
+            objectEditor.userData = pUserData;
+            Selection.activeObject = objectEditor;
+            return objectEditor;
+        }
+
+        #endregion
+        
         [SerializeField]
         [SerializeReference]
 #if ODIN_INSPECTOR
         [Sirenix.OdinInspector.HideReferenceObjectPicker]
 #endif
         public object target;
+        public object userData;
 
         private void OnDisable()
         {
             target = null;
-        }
-
-        public static ObjectInspector Show(object v)
-        {
-            var graphInspector = ScriptableObject.CreateInstance<ObjectInspector>();
-            graphInspector.target = v;
-            Selection.activeObject = graphInspector;
-            return graphInspector;
+            userData = null;
         }
     }
 

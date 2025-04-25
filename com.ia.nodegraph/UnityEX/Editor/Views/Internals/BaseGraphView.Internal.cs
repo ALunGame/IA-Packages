@@ -147,7 +147,6 @@ namespace IANodeGraph.View
 
         private void Uninit()
         {
-            Debug.Log("Uninit--->");
             this.Query<GraphElement>().ForEach(element =>
             {
                 if (element is IGraphElementView bindableView)

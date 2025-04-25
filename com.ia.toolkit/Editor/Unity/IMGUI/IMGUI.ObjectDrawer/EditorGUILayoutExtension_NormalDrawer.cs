@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
+using IAEngine;
 using UnityEditor;
 using UnityEngine;
 
@@ -40,14 +41,17 @@ namespace IAToolkit.UnityEditors
         public static void DrawField(FieldInfo fieldInfo, object context, GUIContent label)
         {
             object value = fieldInfo.GetValue(context);
+            if (value == null)
+            {
+                value = ReflectionHelper.CreateInstance(fieldInfo.FieldType);
+            }
 
             // 判断是否是数组
             if (typeof(IList).IsAssignableFrom(fieldInfo.FieldType))
                 value = DrawArrayField(fieldInfo.FieldType, value, label);
             else
-                value = DrawField(context, label);
-
-            value = DrawField(value, label);
+                value = DrawField(value, label);
+            
             fieldInfo.SetValue(context, value);
         }
 
@@ -70,63 +74,47 @@ namespace IAToolkit.UnityEditors
         {
             Type type = value.GetType();
 
-            if (type.IsClass || (type.IsValueType && !type.IsPrimitive))
+            if (value is string)
             {
-                if (typeof(Delegate).IsAssignableFrom(type)) return null;
-                if (typeof(object).IsAssignableFrom(type) && value == null) return null;
-                int hashCode = value.GetHashCode();
-
-                if (value == null)
-                {
-                    if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>))
-                        type = Nullable.GetUnderlyingType(type);
-                    value = Activator.CreateInstance(type, true);
-                }
-
-                GUILayout.BeginVertical();
-                if (DrawFoldout(hashCode, label))
-                {
-                    EditorGUI.indentLevel++;
-                    foreach (var field in ReflectionEx.GetFields(type, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance))
-                    {
-                        if (!CanDraw(field)) continue;
-
-                        DrawField(field, value, label);
-                    }
-                    EditorGUI.indentLevel--;
-                }
-                GUILayout.EndVertical();
-                return value;
+                float height = EditorGUIExtension.GetHeight(type, label);
+                return EditorGUIExtension.DrawValue(EditorGUILayout.GetControlRect(true, height), value, label);
             }
+            else
+            {
+                if (type.IsClass || (type.IsValueType && !type.IsPrimitive))
+                {
+                    if (typeof(Delegate).IsAssignableFrom(type)) return null;
+                    if (typeof(object).IsAssignableFrom(type) && value == null) return null;
+                    int hashCode = value.GetHashCode();
 
-            float height = EditorGUIExtension.GetHeight(type, label);
-            return EditorGUIExtension.DrawValue(EditorGUILayout.GetControlRect(true, height), value, label);
+                    if (value == null)
+                    {
+                        if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>))
+                            type = Nullable.GetUnderlyingType(type);
+                        value = Activator.CreateInstance(type, true);
+                    }
 
-            //if (_fieldType.Equals(typeof(Matrix4x4)))
-            //{
-            //    GUILayout.BeginVertical(new GUILayoutOption[0]);
-            //    if (EditorGUILayoutExtension.DrawFoldout(label.text.GetHashCode(), label))
-            //    {
-            //        EditorGUI.indentLevel++;
-            //        Matrix4x4 matrix4x = _value == null ? Matrix4x4.identity : (Matrix4x4)_value;
-            //        for (int i = 0; i < 4; i++)
-            //        {
-            //            for (int j = 0; j < 4; j++)
-            //            {
-            //                EditorGUI.BeginChangeCheck();
-            //                matrix4x[i, j] = EditorGUILayout.FloatField("E" + i.ToString() + j.ToString(), matrix4x[i, j]);
-            //                if (EditorGUI.EndChangeCheck())
-            //                {
-            //                    GUI.changed = true;
-            //                }
-            //            }
-            //        }
-            //        _value = matrix4x;
-            //        EditorGUI.indentLevel--;
-            //    }
-            //    GUILayout.EndVertical();
-            //    return _value;
-            //}
+                    GUILayout.BeginVertical();
+                    if (DrawFoldout(hashCode, label))
+                    {
+                        EditorGUI.indentLevel++;
+                        foreach (var field in ReflectionEx.GetFields(type, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance))
+                        {
+                            if (!CanDraw(field)) continue;
+
+                            DrawField(field, value, label);
+                        }
+                        EditorGUI.indentLevel--;
+                    }
+                    GUILayout.EndVertical();
+                    return value;
+                }
+                else
+                {
+                    float height = EditorGUIExtension.GetHeight(type, label);
+                    return EditorGUIExtension.DrawValue(EditorGUILayout.GetControlRect(true, height), value, label);
+                }
+            }
         }
 
         public static object DrawField(object value, string label)

@@ -5,7 +5,7 @@ using System.Reflection;
 
 namespace IANodeGraph.Model
 {
-    public class ViewModelFactory
+    internal static class ViewModelFactory
     {
         private static bool s_Initialized;
         private static Dictionary<Type, IViewModelProducer> s_ViewModelProducers;
@@ -125,6 +125,10 @@ namespace IANodeGraph.Model
         object Produce();
     }
 
+    /// <summary>
+    /// 有参构造函数生产者
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     public sealed class ViewModelProducerR<T> : IViewModelProducer where T : class
     {
         public Type ViewModelType => typeof(T);
@@ -134,6 +138,10 @@ namespace IANodeGraph.Model
         object IViewModelProducer.Produce() => Produce();
     }
 
+    /// <summary>
+    /// 无参构造函数生产者
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     public sealed class ViewModelProducerS<T> : IViewModelProducer where T : class, new()
     {
         public Type ViewModelType => typeof(T);

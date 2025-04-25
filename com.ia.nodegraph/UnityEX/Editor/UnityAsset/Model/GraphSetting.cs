@@ -4,6 +4,7 @@ using IANodeGraph.Window;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using IATimeline;
 using UnityEditor;
 using UnityEngine;
 
@@ -33,6 +34,8 @@ namespace IANodeGraph
         public const string SettingPath = "Assets/Editor/Graph/Setting";
 
         public List<GraphGroupPath> groupPaths = new List<GraphGroupPath>();
+        
+        #region 视图组
 
         public GraphGroupPath GetSearchPath(string typeFullName)
         {
@@ -43,6 +46,7 @@ namespace IANodeGraph
                     return item;
                 }
             }
+            
             return null;
         }
 
@@ -55,6 +59,7 @@ namespace IANodeGraph
                     return item;
                 }
             }
+            
             return null;
         }
 
@@ -150,6 +155,8 @@ namespace IANodeGraph
             }
             return null;
         }
+
+        #endregion
 
         #region Static
 

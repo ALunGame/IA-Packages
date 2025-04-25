@@ -19,6 +19,7 @@ namespace IANodeGraph.Inspector
         private void OnEnable()
         {
             settingAsset = (GraphSetting)target;
+            
             foreach (var item in ReflectionHelper.GetChildTypes<InternalGraphGroupAsset>())
             {
                 if (item.IsAbstract)

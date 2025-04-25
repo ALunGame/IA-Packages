@@ -7,8 +7,8 @@ namespace IANodeGraph.Editors
 {
     public static class GraphProcessorEditorStyles
     {
-        public const string UXMLRootPath = "Packages/com.ia.nodegraph/UnityEX/Editor/Resources/UXML/";
-        public const string USSRootPath = "Packages/com.ia.nodegraph/UnityEX/Editor/Resources/USS/";
+        public const string UXMLRootPath = "Packages/com.ia.nodegraph/UnityEX/Editor/UIAsset/UXML/";
+        public const string USSRootPath = "Packages/com.ia.nodegraph/UnityEX/Editor/UIAsset/USS/";
 
         public class Styles
         {
