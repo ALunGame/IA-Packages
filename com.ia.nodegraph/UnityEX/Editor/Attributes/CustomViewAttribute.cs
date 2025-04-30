@@ -15,4 +15,18 @@ namespace IANodeGraph
             this.targetType = targetType;
         }
     }
+    
+    /// <summary>
+    /// 自定义绑定端口
+    /// </summary>
+    [AttributeUsage(AttributeTargets.Class, AllowMultiple = true, Inherited = false)]
+    public class CustomPortAttribute : Attribute
+    {
+        public Type targetType;
+
+        public CustomPortAttribute(Type targetType)
+        {
+            this.targetType = targetType;
+        }
+    }
 }

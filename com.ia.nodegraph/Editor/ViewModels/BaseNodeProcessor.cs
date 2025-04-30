@@ -101,17 +101,16 @@ namespace IANodeGraph.Model
                 if (AttributeHelper.TryGetFieldAttribute(item, out NodeValueAttribute attr))
                 {
                     BasePort port = null;
-                    
                     PortCapacity capacity = BaseGraphView.IsArrayOrList(item.FieldType) ? PortCapacity.Multi : PortCapacity.Single;
                     
-                    if (attr.portType == null)
+                    if (AttributeHelper.TryGetTypeAttribute(item.FieldType, out CustomPortAttribute attrPort))
                     {
-                        port = new BasePort(item.Name, attr.Lable, attr.Tooltip, attr.showDrawer, attr.direction, capacity, item.FieldType);
+                        port = Activator.CreateInstance(attrPort.targetType, item.Name, attr.Lable, attr.Tooltip, attr.showDrawer,
+                            attr.direction, capacity, item.FieldType) as BasePort;
                     }
                     else
                     {
-                        port = Activator.CreateInstance(attr.portType, item.Name, attr.Lable, attr.Tooltip, attr.showDrawer,
-                            attr.direction, capacity, item.FieldType) as BasePort;
+                        port = new BasePort(item.Name, attr.Lable, attr.Tooltip, attr.showDrawer, attr.direction, capacity, item.FieldType);
                     }
                     
                     port.fieldName = item.Name;

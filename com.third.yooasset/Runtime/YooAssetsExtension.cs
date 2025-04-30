@@ -210,6 +210,7 @@ namespace YooAsset
         #endregion
 
         #region 资源加载
+        
         /// <summary>
         /// 同步加载资源对象
         /// </summary>
@@ -251,8 +252,7 @@ namespace YooAsset
             DebugCheckDefaultPackageValid();
             return _defaultPackage.LoadAssetSync(location);
         }
-
-
+        
         /// <summary>
         /// 异步加载资源对象
         /// </summary>
@@ -294,6 +294,7 @@ namespace YooAsset
             DebugCheckDefaultPackageValid();
             return _defaultPackage.LoadAssetAsync(location, priority);
         }
+        
         #endregion
 
         #region 资源加载

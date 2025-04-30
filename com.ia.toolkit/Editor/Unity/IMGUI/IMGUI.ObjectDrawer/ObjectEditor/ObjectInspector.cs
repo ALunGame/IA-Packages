@@ -1,3 +1,4 @@
+using OfficeOpenXml.FormulaParsing.Excel.Functions.Logical;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -12,10 +13,25 @@ namespace IAToolkit.UnityEditors
 
         public static ObjectInspector Show(object pTargetData, object pUserData = null)
         {
-            if (objectEditor == null)
+            if (objectEditor != null)
             {
-                objectEditor = ScriptableObject.CreateInstance<ObjectInspector>();
+                if (objectEditor.target != null)
+                {
+                    if (objectEditor.target.Equals(pTargetData))
+                    {
+                        if (objectEditor.userData != null && pUserData != null)
+                        {
+                            if (objectEditor.userData.Equals(pUserData))
+                            {
+                                Selection.activeObject = objectEditor;
+                                return objectEditor;
+                            }
+                        }
+                    }
+                }
             }
+            
+            objectEditor = ScriptableObject.CreateInstance<ObjectInspector>();
             objectEditor.target = pTargetData;
             objectEditor.userData = pUserData;
             Selection.activeObject = objectEditor;
