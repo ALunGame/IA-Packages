@@ -17,6 +17,11 @@ namespace IAConfig
 {
     public static partial class Config
     {
+        /// <summary>
+        /// 加载字节数组方法，注入
+        /// </summary>
+        public static Func<string, byte[]> LoadBytesFunc;
+
         #CNFSTR#
 
         public static void Preload()

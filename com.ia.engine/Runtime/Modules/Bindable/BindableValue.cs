@@ -77,6 +77,11 @@ namespace IAEngine
             _value = default;
         }
 
+        public override string ToString()
+        {
+            return $"{_value.ToString()}";
+        }
+
         private void OnValueChanged(T pOldValue)
         {
             if (changeNotifys != null)

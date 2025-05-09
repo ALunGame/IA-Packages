@@ -27,7 +27,7 @@ namespace #KEY#
         private const string loadFun1Str = @"
         public void Load()
         {
-            Byte[] byteArray = IAFramework.GameEnv.Asset.LoadBytes(""Tb#CLASSNAME#"");
+            Byte[] byteArray = IAConfig.Config.LoadBytesFunc?.Invoke(""Tb#CLASSNAME#"");
             List<#CLASSNAME#> configs = MemoryPack.MemoryPackSerializer.Deserialize<List<#CLASSNAME#>>(byteArray);
             AddConfig(configs);
         }
