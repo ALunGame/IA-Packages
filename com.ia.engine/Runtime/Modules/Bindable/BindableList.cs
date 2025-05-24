@@ -83,6 +83,7 @@ namespace IAEngine
         {
             Value.Insert(index, item);
             onInserted?.Invoke(index,item);
+            onAdded?.Invoke(item);
         }
 
         public bool Remove(T item)
