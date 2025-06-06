@@ -16,7 +16,7 @@ namespace IANodeGraph.Model
         [HideInInspector]
         [SerializeField]
         [TextArea(20, 20)]
-        private string serializedGraph = string.Empty;
+        protected string serializedGraph = string.Empty;
 
         public override void SaveGraph(BaseGraph graph)
         {

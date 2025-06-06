@@ -64,7 +64,7 @@ namespace IANodeGraph.Model
             {
                 return null;
             }
-            return AssetDatabase.LoadAssetAtPath<T>(assetPath);
+            return InternalLoadGraphAsset(assetPath);
         }
 
         public override List<InternalBaseGraphAsset> GetAllGraph()
@@ -81,11 +81,17 @@ namespace IANodeGraph.Model
             for (int i = 0; i < guids.Length; i++)
             {
                 string path = AssetDatabase.GUIDToAssetPath(guids[i]);
-                InternalBaseGraphAsset graph = AssetDatabase.LoadAssetAtPath<T>(path);
+                InternalBaseGraphAsset graph = InternalLoadGraphAsset(path);
                 graphs.Add(graph);
             }
 
             return graphs;
+        }
+        
+        protected virtual InternalBaseGraphAsset InternalLoadGraphAsset(string pPath)
+        {
+            InternalBaseGraphAsset graph = AssetDatabase.LoadAssetAtPath<T>(pPath);
+            return graph;
         }
 
         public override void OnClickCreateBtn()
@@ -117,7 +123,7 @@ namespace IANodeGraph.Model
                 return null;
             }
 
-            T graph = CreateInstance<T>();
+            InternalBaseGraphAsset graph = InternalCreateGraphAsset();
             graph.name = name;
 
             string rootAssetPath = GetChildAssetRootPath();
@@ -128,6 +134,12 @@ namespace IANodeGraph.Model
             AssetDatabase.CreateAsset(graph, $"{rootAssetPath}/{graph.name}.asset");
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
+            return graph;
+        }
+
+        protected virtual InternalBaseGraphAsset InternalCreateGraphAsset()
+        {
+            T graph = CreateInstance<T>();
             return graph;
         }
 

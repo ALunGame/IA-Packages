@@ -99,10 +99,16 @@ namespace IAEngine
         /// 注册改变
         /// </summary>
         /// <param name="pOnValueChanged"></param>
-        public void RegisterChanged(Action<T, T> pOnValueChanged)
+        /// <param name="pTriggerCallBack">直接触发一次回调，OldValue这时候非法</param>
+        public void RegisterChanged(Action<T, T> pOnValueChanged, bool pTriggerCallBack = false)
         {
             changeNotifys -= pOnValueChanged;
             changeNotifys += pOnValueChanged;
+            
+            if (pTriggerCallBack)
+            {
+                pOnValueChanged?.Invoke(Value, default);
+            }
         }
 
         /// <summary>

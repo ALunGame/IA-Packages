@@ -8,6 +8,7 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using IAGAS.Editors;
 using UnityEditor;
 using UnityEditor.Callbacks;
 using UnityEditor.Experimental.GraphView;
@@ -407,6 +408,18 @@ namespace IANodeGraph.View
             };
             btnSave.clicked += OnBtnSaveClick;
             ToolbarRight.Add(btnSave);
+        }
+        
+        /// <summary>
+        /// 通过根节点加载视图，提供跳转的方法
+        /// </summary>
+        /// <param name="pAssetType"></param>
+        /// <param name="outAsset"></param>
+        /// <returns></returns>
+        public virtual bool LoadGraphAsset(AssetType pAssetType, GraphRootNodeInfo pRootNodeInfo, out InternalBaseGraphAsset outAsset)
+        {
+            outAsset = null;
+            return outAsset != null;
         }
 
         private  GUIStyle BreadCrumbLeft = "GUIEditor.BreadcrumbLeft";
