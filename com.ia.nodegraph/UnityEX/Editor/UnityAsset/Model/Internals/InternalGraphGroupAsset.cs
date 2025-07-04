@@ -80,7 +80,11 @@ namespace IANodeGraph.Model.Internal
                     {
                         groupInfos.Add(new GraphExportInfo(){Asset = asset, Graph = asset.LoadGraph()});
                     }
-                    ExportGroupGraphs(groupInfos);
+
+                    if (group.Equals(this))
+                    {
+                        ExportGroupGraphs(groupInfos);
+                    }
                     
                     allInfos.AddRange(groupInfos);
                 }

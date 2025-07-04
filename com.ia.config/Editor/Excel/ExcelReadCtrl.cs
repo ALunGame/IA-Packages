@@ -33,6 +33,10 @@ namespace IAConfig.Excel
         [MenuItem("Tools/表格/生成代码")]
         public static void GenCode()
         {
+            //删除旧代码
+            IOHelper.DelDirectoryAllFile(ExcelReadSetting.Setting.GetGenTableCodeRootPath());
+            IOHelper.DelDirectoryAllFile(ExcelReadSetting.Setting.GetGenCfgCodeRootPath());
+            
             List<GenConfigInfo> configs = ReadBaseExcel(true);
 
             //生成导出代码
@@ -66,13 +70,6 @@ namespace IAConfig.Excel
         public static void OpenExcelRootPath()
         {
             MiscHelper.OpenDirectory(ExcelReadSetting.Setting.ConfigRootPath);
-        }
-        
-        [MenuItem("Tools/表格/测试")]
-        public static void Test()
-        {
-            
-
         }
         
         /// <summary>
