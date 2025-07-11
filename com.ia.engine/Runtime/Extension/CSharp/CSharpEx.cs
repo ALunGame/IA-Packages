@@ -1,4 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Reflection;
 
 namespace IAEngine
 {
@@ -17,8 +20,7 @@ namespace IAEngine
         public static bool NotNull(this object input) => !IsNull(input);
 
         #endregion
-
-
+        
         #region Array
 
         /// <summary>
@@ -71,5 +73,34 @@ namespace IAEngine
 
         #endregion
 
+        #region Enum
+
+        private static Dictionary<Enum, string> enumDesDict = new Dictionary<Enum, string>();
+
+        /// <summary>
+        /// 获取枚举描述
+        /// </summary>
+        public static string GetDescription(this Enum pEnum)
+        {
+            if (enumDesDict.ContainsKey(pEnum))
+            {
+                return enumDesDict[pEnum];
+            }
+            
+            FieldInfo field = pEnum.GetType().GetField(pEnum.ToString());
+            DescriptionAttribute attribute = field.GetCustomAttribute<DescriptionAttribute>();
+            if (attribute == null)
+            {
+                enumDesDict.Add(pEnum, pEnum.ToString());
+            }
+            else
+            {
+                enumDesDict.Add(pEnum, attribute.Description);
+            }
+            
+            return enumDesDict[pEnum];
+        }
+        
+        #endregion
     }
 }
